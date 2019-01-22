@@ -2,7 +2,7 @@ import http from './http';
 import { generateSignRequest } from './sign.js';
 import { generateToken } from './token';
 
-class Passport {
+export default class Passport {
   constructor(props) {
     super.constructor(props)
     this.API_Host = props.API_Host;
@@ -100,5 +100,3 @@ class Passport {
     }
   }
 }
-
-export default Passport;

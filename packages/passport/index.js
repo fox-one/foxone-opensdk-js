@@ -1,8 +1,10 @@
+import Passport from './src/passport';
+import { generateSignRequest } from './src/sign';
+import { generateToken, decodeToken } from './src/token';
 
-const Passport = require('./src/passport');
-const Token = require('./src/token');
-const Sign = require('./src/sign');
-
-module.exports = Passport.default;
-module.exports = Token.default;
-module.exports = Sign.default;
+export {
+  Passport,
+  generateSignRequest,
+  generateToken,
+  decodeToken
+}
