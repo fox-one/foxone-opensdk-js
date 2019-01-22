@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var v4_1 = require("uuid/v4");
+var uuid_1 = require("uuid");
 var crypto_js_1 = require("crypto-js");
 function generateSignRequest(_a) {
     var method = _a.method, url = _a.url, _b = _a.body, body = _b === void 0 ? null : _b;
     var ts = getTimestamp();
-    var nonce = v4_1.default();
+    var nonce = uuid_1.v4();
     var uri = url;
     if (uri.indexOf('?') > 0) {
         uri = uri + "_ts=" + ts + "&_nonce=" + nonce;

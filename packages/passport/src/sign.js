@@ -1,9 +1,9 @@
-import uuidV4 from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import CryptoJS from 'crypto-js';
 
 export function generateSignRequest({ method, url, body = null }) {
   let ts = getTimestamp();
-  let nonce = uuidV4();
+  let nonce = uuid();
   let uri = url;
 
   if (uri.indexOf('?') > 0) {
