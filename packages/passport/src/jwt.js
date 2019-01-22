@@ -1,5 +1,5 @@
-import jose from 'node-jose';
-import b64u from 'base64url';
+import * as jose from 'node-jose';
+import * as b64u from 'base64url';
 
 // The oirignal varsion at https://github.com/jsonwebtoken/jsonwebtoken.github.io/blob/master/src/editor/jwt.js
 

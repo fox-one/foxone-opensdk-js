@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var node_jose_1 = require("node-jose");
-var base64url_1 = require("base64url");
+var jose = require("node-jose");
+var b64u = require("base64url");
 // The oirignal varsion at https://github.com/jsonwebtoken/jsonwebtoken.github.io/blob/master/src/editor/jwt.js
 // node-jose does not support keys shorter than block size. This is a
 // limitation from their implementation and could be resolved in the future.
@@ -14,10 +14,10 @@ function paddedKey(key, alg, base64Secret) {
         buf = Buffer.alloc(blockSizeBytes);
         buf.set(oldBuf);
     }
-    return base64url_1.default.encode(buf);
+    return b64u.encode(buf);
 }
 function getJoseKey(header, key, base64Secret) {
-    return node_jose_1.default.JWK.asKey({
+    return jose.JWK.asKey({
         kty: 'oct',
         use: 'sig',
         alg: header.alg,
@@ -33,7 +33,7 @@ function sign(header, payload, secretOrPrivateKeyString, base64Secret) {
         if (!(typeof payload === 'string' || payload instanceof String)) {
             payload = JSON.stringify(payload);
         }
-        return node_jose_1.default.JWS.createSign({
+        return jose.JWS.createSign({
             fields: header,
             format: 'compact'
         }, {
@@ -53,7 +53,7 @@ function verify(jwt, secretOrPublicKeyString, base64Secret) {
         return Promise.resolve(false);
     }
     return getJoseKey(decoded.header, secretOrPublicKeyString, base64Secret).then(function (key) {
-        return node_jose_1.default.JWS.createVerify(key)
+        return jose.JWS.createVerify(key)
             .verify(jwt)
             .then(function () { return true; }, function () { return false; });
     }, function (e) {
@@ -75,14 +75,14 @@ function decode(jwt) {
     }
     var split = jwt.split('.');
     try {
-        result.header = JSON.parse(base64url_1.default.decode(split[0]));
+        result.header = JSON.parse(b64u.decode(split[0]));
     }
     catch (e) {
         result.header = {};
         result.errors = true;
     }
     try {
-        result.payload = JSON.parse(base64url_1.default.decode(split[1]));
+        result.payload = JSON.parse(b64u.decode(split[1]));
     }
     catch (e) {
         result.payload = {};
