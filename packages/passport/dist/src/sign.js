@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var uuid_1 = require("uuid");
-var crypto_js_1 = require("crypto-js");
+var CryptoJS = require("crypto-js");
 function generateSignRequest(_a) {
     var method = _a.method, url = _a.url, _b = _a.body, body = _b === void 0 ? null : _b;
     var ts = getTimestamp();
@@ -17,8 +17,8 @@ function generateSignRequest(_a) {
     if (body) {
         message += JSON.stringify(body);
     }
-    var digiest = crypto_js_1.default.SHA256(message);
-    var sign = crypto_js_1.default.enc.Base64.stringify(digiest);
+    var digiest = CryptoJS.SHA256(message);
+    var sign = CryptoJS.enc.Base64.stringify(digiest);
     return { uri: uri, body: body, sign: sign };
 }
 exports.generateSignRequest = generateSignRequest;

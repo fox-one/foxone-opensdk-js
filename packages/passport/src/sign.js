@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 
 export function generateSignRequest({ method, url, body = null }) {
   let ts = getTimestamp();
