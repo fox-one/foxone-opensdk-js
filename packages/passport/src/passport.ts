@@ -36,12 +36,34 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async register(register: { name: string, mobileCode: string, password: string, token: string }) {
+  async requestRegisterMail(registerMail: { email: string }) {
+    const url = '/api/account/request_register_email';
+    const method = 'post';
+    const body = {
+      email: registerMail.email
+    }
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async registerMobile(register: { name: string, mobileCode: string, password: string, token: string }) {
     const url = '/api/account/register_phone';
     const method = 'post';
     const body = {
       name: register.name,
       code: register.mobileCode,
+      password: register.password,
+      token: register.token
+    }
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async register(register: { name: string | null, code: string, password: string, token: string }) {
+    const url = '/api/account/register';
+    const method = 'post';
+    const body = {
+      name: register.name,
+      code: register.code,
       password: register.password,
       token: register.token
     }
@@ -72,13 +94,21 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async login(login: { regionCode: string | null, mobile: string, password: string }) {
+  async login(login: { regionCode: string | null, mobile: string | null, email: string | null, password: string }) {
     const url = '/api/account/login';
     const method = 'post';
-    const body = {
-      phone_code: login.regionCode,
-      phone_number: login.mobile,
-      password: login.password
+    let body: {};
+    if (login.email) {
+      body = {
+        email: login.email,
+        password: login.password
+      }
+    } else {
+      body = {
+        phone_number: login.mobile,
+        phone_code: login.regionCode,
+        password: login.password
+      }
     }
 
     return await this.postRequest(generateSignRequest({ method, url, body }));

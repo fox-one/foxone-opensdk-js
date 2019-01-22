@@ -96,7 +96,24 @@ var Passport = /** @class */ (function () {
             });
         });
     };
-    Passport.prototype.register = function (register) {
+    Passport.prototype.requestRegisterMail = function (registerMail) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method, body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/request_register_email';
+                        method = 'post';
+                        body = {
+                            email: registerMail.email
+                        };
+                        return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Passport.prototype.registerMobile = function (register) {
         return __awaiter(this, void 0, void 0, function () {
             var url, method, body;
             return __generator(this, function (_a) {
@@ -107,6 +124,26 @@ var Passport = /** @class */ (function () {
                         body = {
                             name: register.name,
                             code: register.mobileCode,
+                            password: register.password,
+                            token: register.token
+                        };
+                        return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Passport.prototype.register = function (register) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method, body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/register';
+                        method = 'post';
+                        body = {
+                            name: register.name,
+                            code: register.code,
                             password: register.password,
                             token: register.token
                         };
@@ -162,11 +199,19 @@ var Passport = /** @class */ (function () {
                     case 0:
                         url = '/api/account/login';
                         method = 'post';
-                        body = {
-                            phone_code: login.regionCode,
-                            phone_number: login.mobile,
-                            password: login.password
-                        };
+                        if (login.email) {
+                            body = {
+                                email: login.email,
+                                password: login.password
+                            };
+                        }
+                        else {
+                            body = {
+                                phone_number: login.mobile,
+                                phone_code: login.regionCode,
+                                password: login.password
+                            };
+                        }
                         return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
