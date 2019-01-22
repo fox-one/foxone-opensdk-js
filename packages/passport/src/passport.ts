@@ -1,0 +1,114 @@
+import http from './http';
+import { generateSignRequest } from './sign.js';
+import { generateToken } from './token';
+
+export default class Passport {
+  host: string;
+  merchantId: string;
+  constructor(props: { host: string, merchantId: string }) {
+    this.host = props.host;
+    this.merchantId = props.merchantId
+  }
+
+  async getCaptcha() {
+    const url = '/api/captcha';
+    const method = 'post';
+    const signData = generateSignRequest({ method, url })
+    let uri = `${this.host}${signData.uri}`
+    let res = await http.post(uri)
+    let data = {
+      captchaId: res.captcha_id,
+      captchaURL: `${this.host}/api/captcha/${res.captcha_id}.png`
+    }
+    return data;
+  }
+
+  async requestRegisterSMS(registerSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
+    const url = '/api/account/request_register_phone';
+    const method = 'post';
+    const body = {
+      phone_code: registerSMS.regionCode,
+      phone_number: registerSMS.mobile,
+      captcha_id: registerSMS.captchaId,
+      capture: registerSMS.captchaCode
+    }
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async register(register: { name: string, mobileCode: string, password: string, token: string }) {
+    const url = '/api/account/register_phone';
+    const method = 'post';
+    const body = {
+      name: register.name,
+      code: register.mobileCode,
+      password: register.password,
+      token: register.token
+    }
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async requestLoginSMS(loginSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
+    const url = '/api/account/request_login_phone';
+    const method = 'post';
+    const body = {
+      phone_code: loginSMS.regionCode,
+      phone_number: loginSMS.mobile,
+      captcha_id: loginSMS.captchaId,
+      capture: loginSMS.captchaCode
+    }
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async mobileLogin(login: { token: string, mobileCode: string }) {
+    const url = 'api/account/login_phone';
+    const method = 'post';
+    const body = {
+      token: login.token,
+      code: login.mobileCode
+    }
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async login(login: { regionCode: string | null, mobile: string, password: string }) {
+    const url = '/api/account/login';
+    const method = 'post';
+    const body = {
+      phone_code: login.regionCode,
+      phone_number: login.mobile,
+      password: login.password
+    }
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  async getUserDetail(secret: { key: string, secret: string }) {
+    const url = '/api/account/detail';
+    const method = 'get';
+    const signData = generateSignRequest({ method, url });
+    const keyAndSign = {
+      key: secret.key,
+      secret: secret.secret,
+      requestSign: signData.sign
+    }
+
+    const token = await generateToken(keyAndSign);
+    const uri = `${this.host}${signData.uri}`
+
+    return await http.get(uri, { headers: { "Authorization": `Bearer ${token}`, ...this.defaulutHeader() } })
+  }
+
+  async postRequest(signData: { uri: any, body: any, sign?: any }) {
+    const uri = `${this.host}${signData.uri}`
+    const headers = { headers: this.defaulutHeader() }
+    return await http.post(uri, signData.body, headers)
+  }
+
+  defaulutHeader() {
+    return {
+      "fox-cloud-merchant-id": this.merchantId
+    }
+  }
+}
