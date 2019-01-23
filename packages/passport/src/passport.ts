@@ -23,38 +23,17 @@ export default class Passport {
     return data;
   }
 
-  async requestRegisterSMS(registerSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
-    const url = '/api/account/request_register_phone';
+  async requestRegister(registerSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string, email: string }) {
+    const url = '/api/account/request_register';
     const method = 'post';
     const body = {
       phone_code: registerSMS.regionCode,
       phone_number: registerSMS.mobile,
       captcha_id: registerSMS.captchaId,
-      capture: registerSMS.captchaCode
+      capture: registerSMS.captchaCode,
+      email: registerSMS.email
     }
 
-    return await this.postRequest(generateSignRequest({ method, url, body }));
-  }
-
-  async requestRegisterMail(registerMail: { email: string }) {
-    const url = '/api/account/request_register_email';
-    const method = 'post';
-    const body = {
-      email: registerMail.email
-    }
-
-    return await this.postRequest(generateSignRequest({ method, url, body }));
-  }
-
-  async registerMobile(register: { name: string, mobileCode: string, password: string, token: string }) {
-    const url = '/api/account/register_phone';
-    const method = 'post';
-    const body = {
-      name: register.name,
-      code: register.mobileCode,
-      password: register.password,
-      token: register.token
-    }
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
