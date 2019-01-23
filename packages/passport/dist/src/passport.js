@@ -179,7 +179,7 @@ var Passport = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        url = 'api/account/login_phone';
+                        url = '/api/account/login_phone';
                         method = 'post';
                         body = {
                             token: login.token,

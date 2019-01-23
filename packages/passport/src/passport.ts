@@ -84,7 +84,7 @@ export default class Passport {
   }
 
   async mobileLogin(login: { token: string, mobileCode: string }) {
-    const url = 'api/account/login_phone';
+    const url = '/api/account/login_phone';
     const method = 'post';
     const body = {
       token: login.token,
