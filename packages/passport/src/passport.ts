@@ -23,15 +23,15 @@ export default class Passport {
     return data;
   }
 
-  async requestRegister(registerSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string, email: string }) {
+  async requestRegister(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string, email: string }) {
     const url = '/api/account/request_register';
     const method = 'post';
     const body = {
-      phone_code: registerSMS.regionCode,
-      phone_number: registerSMS.mobile,
-      captcha_id: registerSMS.captchaId,
-      capture: registerSMS.captchaCode,
-      email: registerSMS.email
+      phone_code: request.regionCode,
+      phone_number: request.mobile,
+      captcha_id: request.captchaId,
+      capture: request.captchaCode,
+      email: request.email
     }
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
@@ -49,14 +49,14 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async requestLoginSMS(loginSMS: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
+  async requestLoginSMS(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
     const url = '/api/account/request_login_phone';
     const method = 'post';
     const body = {
-      phone_code: loginSMS.regionCode,
-      phone_number: loginSMS.mobile,
-      captcha_id: loginSMS.captchaId,
-      capture: loginSMS.captchaCode
+      phone_code: request.regionCode,
+      phone_number: request.mobile,
+      captcha_id: request.captchaId,
+      capture: request.captchaCode
     }
 
     return await this.postRequest(generateSignRequest({ method, url, body }));

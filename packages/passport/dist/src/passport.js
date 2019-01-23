@@ -76,56 +76,20 @@ var Passport = /** @class */ (function () {
             });
         });
     };
-    Passport.prototype.requestRegisterSMS = function (registerSMS) {
+    Passport.prototype.requestRegister = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var url, method, body;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        url = '/api/account/request_register_phone';
+                        url = '/api/account/request_register';
                         method = 'post';
                         body = {
-                            phone_code: registerSMS.regionCode,
-                            phone_number: registerSMS.mobile,
-                            captcha_id: registerSMS.captchaId,
-                            capture: registerSMS.captchaCode
-                        };
-                        return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    Passport.prototype.requestRegisterMail = function (registerMail) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, method, body;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        url = '/api/account/request_register_email';
-                        method = 'post';
-                        body = {
-                            email: registerMail.email
-                        };
-                        return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    Passport.prototype.registerMobile = function (register) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, method, body;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        url = '/api/account/register_phone';
-                        method = 'post';
-                        body = {
-                            name: register.name,
-                            code: register.mobileCode,
-                            password: register.password,
-                            token: register.token
+                            phone_code: request.regionCode,
+                            phone_number: request.mobile,
+                            captcha_id: request.captchaId,
+                            capture: request.captchaCode,
+                            email: request.email
                         };
                         return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -153,7 +117,7 @@ var Passport = /** @class */ (function () {
             });
         });
     };
-    Passport.prototype.requestLoginSMS = function (loginSMS) {
+    Passport.prototype.requestLoginSMS = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var url, method, body;
             return __generator(this, function (_a) {
@@ -162,10 +126,10 @@ var Passport = /** @class */ (function () {
                         url = '/api/account/request_login_phone';
                         method = 'post';
                         body = {
-                            phone_code: loginSMS.regionCode,
-                            phone_number: loginSMS.mobile,
-                            captcha_id: loginSMS.captchaId,
-                            capture: loginSMS.captchaCode
+                            phone_code: request.regionCode,
+                            phone_number: request.mobile,
+                            captcha_id: request.captchaId,
+                            capture: request.captchaCode
                         };
                         return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];

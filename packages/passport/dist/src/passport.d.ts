@@ -9,20 +9,12 @@ export default class Passport {
         captchaId: any;
         captchaURL: string;
     }>;
-    requestRegisterSMS(registerSMS: {
+    requestRegister(request: {
         regionCode: string;
         mobile: string;
         captchaId: string;
         captchaCode: string;
-    }): Promise<any>;
-    requestRegisterMail(registerMail: {
         email: string;
-    }): Promise<any>;
-    registerMobile(register: {
-        name: string;
-        mobileCode: string;
-        password: string;
-        token: string;
     }): Promise<any>;
     register(register: {
         name: string | null;
@@ -30,7 +22,7 @@ export default class Passport {
         password: string;
         token: string;
     }): Promise<any>;
-    requestLoginSMS(loginSMS: {
+    requestLoginSMS(request: {
         regionCode: string;
         mobile: string;
         captchaId: string;
