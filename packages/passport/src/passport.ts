@@ -116,8 +116,12 @@ export default class Passport {
   }
 
   defaulutHeader() {
-    return {
-      "fox-cloud-merchant-id": this.merchantId
+    if(this.merchantId) {
+      return {
+        "fox-cloud-merchant-id": this.merchantId
+      }
+    } else {
+      return {}
     }
   }
 }
