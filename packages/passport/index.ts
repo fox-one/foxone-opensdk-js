@@ -1,4 +1,5 @@
 import Passport from './src/passport';
+import Admin from './src/admin';
 import { generateSignRequest, generateSignAndJWT } from './src/sign';
 import { generateToken, decodeToken } from './src/token';
 
@@ -7,5 +8,6 @@ export {
   generateSignRequest,
   generateToken,
   decodeToken,
-  generateSignAndJWT
+  generateSignAndJWT,
+  Admin
 }

@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = require("./src/passport");
 exports.Passport = passport_1.default;
+var admin_1 = require("./src/admin");
+exports.Admin = admin_1.default;
 var sign_1 = require("./src/sign");
 exports.generateSignRequest = sign_1.generateSignRequest;
 exports.generateSignAndJWT = sign_1.generateSignAndJWT;
