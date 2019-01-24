@@ -108,7 +108,7 @@ export default class Passport {
 
     return await http.get(uri, { headers: { "Authorization": `Bearer ${token}`, ...this.defaulutHeader() } })
   }
-
+  
   async postRequest(signData: { uri: any, body: any, sign?: any }) {
     const uri = `${this.host}${signData.uri}`
     const headers = { headers: this.defaulutHeader() }

@@ -14,7 +14,7 @@ export declare function generateSignAndJWT(request: {
     key: string;
     secret: string;
 }): Promise<{
-    url: string;
+    uri: string;
     body: any;
     headers: {
         "Authorization": string;

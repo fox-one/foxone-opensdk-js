@@ -60,17 +60,13 @@ function generateSignRequest(request) {
 exports.generateSignRequest = generateSignRequest;
 function generateSignAndJWT(request) {
     return __awaiter(this, void 0, void 0, function () {
-        var method, url, body, key, secret, signData, sign, keyAndSign, token;
+        var method, url, body, key, secret, signData, sign, uri, keyAndSign, token;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    method = request.method;
-                    url = request.url;
-                    body = request.body;
-                    key = request.key;
-                    secret = request.secret;
+                    method = request.method, url = request.url, body = request.body, key = request.key, secret = request.secret;
                     signData = generateSignRequest({ method: method, url: url, body: body });
-                    sign = signData.sign;
+                    sign = signData.sign, uri = signData.uri;
                     keyAndSign = {
                         key: key,
                         secret: secret,
@@ -79,7 +75,7 @@ function generateSignAndJWT(request) {
                     return [4 /*yield*/, token_1.generateToken(keyAndSign)];
                 case 1:
                     token = _a.sent();
-                    return [2 /*return*/, { url: url, body: body, headers: { "Authorization": "Bearer " + token } }];
+                    return [2 /*return*/, { uri: uri, body: body, headers: { "Authorization": "Bearer " + token } }];
             }
         });
     });

@@ -25,14 +25,10 @@ export function generateSignRequest(request: { method: string, url: string, body
 }
 
 export async function generateSignAndJWT(request: { method: string, url: string, body?: any, key: string, secret: string }) {
-  let method = request.method;
-  let url = request.url;
-  let body = request.body;
-  let key = request.key;
-  let secret = request.secret;
+  let { method, url, body, key, secret } = request;
 
   const signData = generateSignRequest({ method, url, body });
-  const sign = signData.sign;
+  const { sign, uri } = signData;
 
   const keyAndSign = {
     key,
@@ -41,7 +37,7 @@ export async function generateSignAndJWT(request: { method: string, url: string,
   }
 
   let token = await generateToken(keyAndSign);
-  return { url, body, headers: { "Authorization": `Bearer ${token}` } }
+  return { uri, body, headers: { "Authorization": `Bearer ${token}` } }
 }
 
 function getTimestamp(date = new Date()) {
