@@ -1,13 +1,27 @@
 import { sign, decode } from './jwt';
 
-export async function generateToken(keyAndSign: {key: string, secret: string, requestSign: string}): Promise<string> {
+export async function generateToken(keyAndSign: {key: string, secret: string, requestSign: string}) {
+  const {key, secret, requestSign} = keyAndSign;
+
+  if (!key) {
+    throw new Error('missing key');
+  }
+
+  if (!secret) {
+    throw new Error('missing secret');
+  }
+
+  if (!requestSign) {
+    throw new Error('missing requestSign');
+  }
+
   const header = {
     alg: "HS256",
     typ: "JWT"
   }
 
   const payload = {
-    key: keyAndSign.key,
+    key,
     sign: keyAndSign.requestSign
   }
 

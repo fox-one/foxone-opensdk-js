@@ -38,16 +38,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jwt_1 = require("./jwt");
 function generateToken(keyAndSign) {
     return __awaiter(this, void 0, void 0, function () {
-        var header, payload;
+        var key, secret, requestSign, header, payload;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    key = keyAndSign.key, secret = keyAndSign.secret, requestSign = keyAndSign.requestSign;
+                    if (!key) {
+                        throw new Error('missing key');
+                    }
+                    if (!secret) {
+                        throw new Error('missing secret');
+                    }
+                    if (!requestSign) {
+                        throw new Error('missing requestSign');
+                    }
                     header = {
                         alg: "HS256",
                         typ: "JWT"
                     };
                     payload = {
-                        key: keyAndSign.key,
+                        key: key,
                         sign: keyAndSign.requestSign
                     };
                     return [4 /*yield*/, jwt_1.sign(header, payload, keyAndSign.secret)];

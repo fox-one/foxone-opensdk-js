@@ -41,10 +41,9 @@ var token_1 = require("./token");
 function generateSignRequest(request) {
     var ts = getTimestamp();
     var nonce = uuid_1.v4();
-    var uri = request.url;
-    var body = request.body;
+    var uri = request.url, body = request.body;
     if (uri.indexOf('?') > 0) {
-        uri = uri + "_ts=" + ts + "&_nonce=" + nonce;
+        uri = uri + "&_ts=" + ts + "&_nonce=" + nonce;
     }
     else {
         uri = uri + "?_ts=" + ts + "&_nonce=" + nonce;

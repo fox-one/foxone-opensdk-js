@@ -5,11 +5,10 @@ import { generateToken } from './token';
 export function generateSignRequest(request: { method: string, url: string, body?: any }) {
   let ts = getTimestamp();
   let nonce = uuid();
-  let uri = request.url;
-  let body = request.body;
+  let { url: uri, body } = request;
 
   if (uri.indexOf('?') > 0) {
-    uri = `${uri}_ts=${ts}&_nonce=${nonce}`
+    uri = `${uri}&_ts=${ts}&_nonce=${nonce}`
   } else {
     uri = `${uri}?_ts=${ts}&_nonce=${nonce}`
   }

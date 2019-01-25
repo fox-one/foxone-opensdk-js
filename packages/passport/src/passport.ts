@@ -1,5 +1,5 @@
 import http from './http';
-import { generateSignRequest } from './sign.js';
+import { generateSignRequest } from './sign';
 import { generateToken } from './token';
 
 export default class Passport {
