@@ -20,3 +20,4 @@ export declare function generateSignAndJWT(request: {
         "Authorization": string;
     };
 }>;
+export declare function passwordSalt(password: string): string;

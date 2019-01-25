@@ -1,6 +1,7 @@
 import http from './http';
-import { generateSignRequest } from './sign';
+import { generateSignRequest, passwordSalt } from './sign';
 import { generateToken } from './token';
+
 
 export default class Passport {
   host: string;
@@ -37,13 +38,13 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async register(register: { name: string | null, code: string, password: string, token: string }) {
+  async register(register: { name?: string, code: string, password: string, token: string }) {
     const url = '/api/account/register';
     const method = 'post';
     const body = {
       name: register.name,
       code: register.code,
-      password: register.password,
+      password: passwordSalt(register.password),
       token: register.token
     }
     return await this.postRequest(generateSignRequest({ method, url, body }));
@@ -73,20 +74,21 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async login(login: { regionCode: string | null, mobile: string | null, email: string | null, password: string }) {
+  async login(login: { regionCode?: string , mobile?: string, email?: string, password: string }) {
     const url = '/api/account/login';
     const method = 'post';
     let body: {};
+    let saltPassword = passwordSalt(login.password);
     if (login.email) {
       body = {
         email: login.email,
-        password: login.password
+        password: saltPassword
       }
     } else {
       body = {
         phone_number: login.mobile,
         phone_code: login.regionCode,
-        password: login.password
+        password: saltPassword
       }
     }
 
@@ -108,7 +110,7 @@ export default class Passport {
 
     return await http.get(uri, { headers: { "Authorization": `Bearer ${token}`, ...this.defaulutHeader() } })
   }
-  
+
   async postRequest(signData: { uri: any, body: any, sign?: any }) {
     const uri = `${this.host}${signData.uri}`
     const headers = { headers: this.defaulutHeader() }
@@ -116,7 +118,7 @@ export default class Passport {
   }
 
   defaulutHeader() {
-    if(this.merchantId) {
+    if (this.merchantId) {
       return {
         "fox-cloud-merchant-id": this.merchantId
       }

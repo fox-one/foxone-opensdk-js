@@ -39,6 +39,11 @@ export async function generateSignAndJWT(request: { method: string, url: string,
   return { uri, body, headers: { "Authorization": `Bearer ${token}` } }
 }
 
+export function passwordSalt(password: string) {
+  let digest = CryptoJS.MD5(`fox.${password}`).toString();
+  return digest;
+}
+
 function getTimestamp(date = new Date()) {
   return Math.round(date.getTime() / 1000)
 }

@@ -17,7 +17,7 @@ export default class Passport {
         email: string;
     }): Promise<any>;
     register(register: {
-        name: string | null;
+        name?: string;
         code: string;
         password: string;
         token: string;
@@ -33,9 +33,9 @@ export default class Passport {
         mobileCode: string;
     }): Promise<any>;
     login(login: {
-        regionCode: string | null;
-        mobile: string | null;
-        email: string | null;
+        regionCode?: string;
+        mobile?: string;
+        email?: string;
         password: string;
     }): Promise<any>;
     getUserDetail(secret: {

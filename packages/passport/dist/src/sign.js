@@ -80,6 +80,11 @@ function generateSignAndJWT(request) {
     });
 }
 exports.generateSignAndJWT = generateSignAndJWT;
+function passwordSalt(password) {
+    var digest = CryptoJS.MD5("fox." + password).toString();
+    return digest;
+}
+exports.passwordSalt = passwordSalt;
 function getTimestamp(date) {
     if (date === void 0) { date = new Date(); }
     return Math.round(date.getTime() / 1000);

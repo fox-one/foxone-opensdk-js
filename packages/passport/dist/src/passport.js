@@ -108,7 +108,7 @@ var Passport = /** @class */ (function () {
                         body = {
                             name: register.name,
                             code: register.code,
-                            password: register.password,
+                            password: sign_1.passwordSalt(register.password),
                             token: register.token
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
@@ -157,23 +157,24 @@ var Passport = /** @class */ (function () {
     };
     Passport.prototype.login = function (login) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, method, body;
+            var url, method, body, saltPassword;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         url = '/api/account/login';
                         method = 'post';
+                        saltPassword = sign_1.passwordSalt(login.password);
                         if (login.email) {
                             body = {
                                 email: login.email,
-                                password: login.password
+                                password: saltPassword
                             };
                         }
                         else {
                             body = {
                                 phone_number: login.mobile,
                                 phone_code: login.regionCode,
-                                password: login.password
+                                password: saltPassword
                             };
                         }
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];

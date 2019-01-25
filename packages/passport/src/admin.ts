@@ -1,6 +1,5 @@
 import http from './http';
-import { generateSignRequest } from './sign.js';
-import { generateToken } from './token';
+import { generateSignRequest, passwordSalt } from './sign.js';
 
 export default class Admin {
   host: string;
@@ -11,9 +10,10 @@ export default class Admin {
   async login(login: { username: string, password: string }) {
     const url = '/admin/login';
     const method = 'post';
+    
     const body = {
       username: login.username,
-      password: login.password
+      password: passwordSalt(login.password)
     }
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
