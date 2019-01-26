@@ -28,13 +28,13 @@ Passport 登陆后获取到的数据结构大致如下，**session为后续接�
 
 ```json
 {
-    user:
+    "user":
      {
-    ...
+    //...
     },
-    session: {
-        key: 'xxxx',
-        secret:'xxx'
+    "session": {
+        "key": "xxxx",
+        "secret":"xxx"
     }
 }
 ```
@@ -52,25 +52,49 @@ const passport = new Passport({
 // 获取滑块
 passport.getCaptcha()
 
-// 获取注册验证码
-passport.requestRegister(params)
+// 获取注册验证码 邮箱 手机二选一
+passport.requestRegister({regionCode,
+        mobile,
+        captchaId,
+        captchaCode,
+        email})
+return {token:''}
 
-// 注册
-passport.register(params)
-
+// 注册 name可不传
+passport.register({
+        name,
+        code,
+        password,
+        token,
+    })
+return {user:{},session:{}}
 // 获取手机登录验证码
-passport.requestLoginSMS(params)
+passport.requestLoginSMS({
+        regionCode,
+        mobile,
+        captchaId,
+        captchaCode
+    })
+return {token:''}
 
 // 手机登陆
-passport.mobileLogin(params)
+passport.mobileLogin({
+        token,
+        mobileCode,
+})
+return {user:{},session:{}}
 
 // 账户密码登陆
+// mobile 或者邮箱为选填字段
 passport.login({ password: rawPassword, mobile, email })
+return {user:{},session:{}}
 
 // 获取用户信息
-passport.getUserDetail(session)
+passport.getUserDetail({secret, key})
+return {user:{}}
 
 ```
+
 ### Admin
 商户模块
 ```javascript
@@ -81,15 +105,16 @@ const admin = new Admin({
 });
 // 商户登陆
 admin.login({ password: rawPassword, username})
+return {admin:{},session:{}}
 ```
 
 ### Sign
 签名函数
 ```javascript
-import { generateSignRequest, generateSignAndJWT, generateToken } from 'f1-passport';
+import { generateSignRequest, generateSignAndJWT } from 'f1-passport';
 
 const signData = generateSignRequest({ method: 'get', url: pathAndQuery, body: options.body });
-
+return { uri, body, sign }
 
 ```
 ### Token
@@ -115,6 +140,16 @@ const salePassword = passwordSalt(password);
 "Authorization": `Bearer ${token}` }
 
 **token 为上述 Token 章节生成的动态token，每次都不一样，需要每次创建新的Token**
+
+
+### Host 
+Admin https://dev-gateway.fox.one/
+admin login https://dev-gateway.fox.one/admin/login
+
+Maker https://dev-cloud.fox.one/
+maker login https://dev-cloud.fox.one/api/account/login
+
+
 
 ### Example 
 
