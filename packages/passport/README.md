@@ -43,6 +43,8 @@ Passport 登陆后获取到的数据结构大致如下，**session为后续接�
 用户登陆模块
 ```javascript
 import { Passport } from 'f1-passport';
+
+// 实例化 Passport
 const passport = new Passport({
   host: constants.passportHost,
   merchantId: constants.merchantId,
@@ -64,6 +66,7 @@ passport.mobileLogin(params)
 
 // 账户密码登陆
 passport.login({ password: rawPassword, mobile, email })
+
 // 获取用户信息
 passport.getUserDetail(session)
 
@@ -101,5 +104,48 @@ const token = await generateToken({ key: session.key, secret: session.secret, re
 密码加盐
 ```javascript
 import { passwordSalt } from 'f1-passport';
+const salePassword = passwordSalt(password);
+```
+## **Fox Cloud API 和 Gateway API 的调用说明**
+
+当业务方为 User，Maker 时必须在 Http Header里添加请求头
+'fox-cloud-merchant-id':'xxxxxxx'
+
+所有的业务方在有用户session时，发送的请求都需要默认的加上 
+"Authorization": `Bearer ${token}` }
+
+**token 为上述 Token 章节生成的动态token，每次都不一样，需要每次创建新的Token**
+
+### Example 
+
+一个具体实际的例子，传入的url为完整的url，函数正则截取 host 对host 之后的path进行签名和请求
+
+```javascript
+const regexSt = new RegExp('^https://[a-zA-Z0-9.-]*/');
+
+async function signAndRequest(session, url, options) {
+  let host = url.match(regexSt)[0];
+  host = host.substring(0, host.length - 1);
+
+  const pathAndQuery = url.replace(regexSt, '/');
+  const signData = generateSignRequest({ method: options.method, url: pathAndQuery, body: options.body });
+  const token = await generateToken({ key: session.key, secret: session.secret, requestSign: signData.sign });
+  const finalUrl = `${host}${signData.uri}`;
+  const headers = {
+    ...options.headers,
+    Authorization: `Bearer ${token}`,
+  };
+  const newOptions = {
+    ...options,
+    method: options.method,
+    body: JSON.stringify(signData.body),
+    headers,
+  };
+  return window.fetch(finalUrl, newOptions);
+}
 ```
 
+### Playground
+以下为已集成了 passportsdk 的模版
+[FoxOne Admin 模版](https://github.com/fox-one/f1-admin-playground)
+[FoxONE Maker 模板工程](https://github.com/fox-one/f1-maker-playground)
