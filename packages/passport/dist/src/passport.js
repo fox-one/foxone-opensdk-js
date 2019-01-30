@@ -88,7 +88,7 @@ var Passport = /** @class */ (function () {
                             phone_code: request.regionCode,
                             phone_number: request.mobile,
                             captcha_id: request.captchaId,
-                            capture: request.captchaCode,
+                            captcha: request.captchaCode,
                             email: request.email
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
@@ -129,7 +129,7 @@ var Passport = /** @class */ (function () {
                             phone_code: request.regionCode,
                             phone_number: request.mobile,
                             captcha_id: request.captchaId,
-                            capture: request.captchaCode
+                            captcha: request.captchaCode
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];

@@ -31,7 +31,7 @@ export default class Passport {
       phone_code: request.regionCode,
       phone_number: request.mobile,
       captcha_id: request.captchaId,
-      capture: request.captchaCode,
+      captcha: request.captchaCode,
       email: request.email
     }
 
@@ -57,7 +57,7 @@ export default class Passport {
       phone_code: request.regionCode,
       phone_number: request.mobile,
       captcha_id: request.captchaId,
-      capture: request.captchaCode
+      captcha: request.captchaCode
     }
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
