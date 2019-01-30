@@ -1,6 +1,6 @@
 {
   "name": "foxone-opensdk-js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Fox.One Open SDK for JS",
   "repository": "git@github.com:fox-one/foxone-opensdk-js.git",
   "author": "moubuns <mengwl@fox.one>",
