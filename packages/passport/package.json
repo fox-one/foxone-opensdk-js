@@ -4,6 +4,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/base64url": "^2.0.0",
