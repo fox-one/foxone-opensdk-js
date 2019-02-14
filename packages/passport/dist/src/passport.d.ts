@@ -48,8 +48,8 @@ export default class Passport {
         sign?: any;
     }): Promise<any>;
     defaulutHeader(): {
-        "fox-cloud-merchant-id": string;
+        "fox-merchant-id": string;
     } | {
-        "fox-cloud-merchant-id"?: undefined;
+        "fox-merchant-id"?: undefined;
     };
 }

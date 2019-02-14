@@ -134,7 +134,7 @@ const salePassword = passwordSalt(password);
 ## **Fox Cloud API 和 Gateway API 的调用说明**
 
 当业务方为 User，Maker 时必须在 Http Header里添加请求头
-'fox-cloud-merchant-id':'xxxxxxx'
+'fox-merchant-id':'xxxxxxx'
 
 所有的业务方在有用户session时，发送的请求都需要默认的加上 
 "Authorization": `Bearer ${token}` }

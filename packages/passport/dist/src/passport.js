@@ -224,7 +224,7 @@ var Passport = /** @class */ (function () {
     Passport.prototype.defaulutHeader = function () {
         if (this.merchantId) {
             return {
-                "fox-cloud-merchant-id": this.merchantId
+                "fox-merchant-id": this.merchantId
             };
         }
         else {

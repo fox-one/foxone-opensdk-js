@@ -120,7 +120,7 @@ export default class Passport {
   defaulutHeader() {
     if (this.merchantId) {
       return {
-        "fox-cloud-merchant-id": this.merchantId
+        "fox-merchant-id": this.merchantId
       }
     } else {
       return {}
