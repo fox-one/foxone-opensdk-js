@@ -1,6 +1,6 @@
 {
   "name": "f1-passport",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -36,6 +36,7 @@
     "webpack-cli": "^3.2.1"
   },
   "scripts": {
-    "build": "tsc && yarn publish"
+    "build": "tsc",
+    "pub": "tsc && yarn publish"
   }
 }
