@@ -143,12 +143,8 @@ const salePassword = passwordSalt(password);
 
 
 ### Host 
-Admin https://dev-gateway.fox.one/
-admin login https://dev-gateway.fox.one/admin/login
-
-Maker https://dev-cloud.fox.one/
-maker login https://dev-cloud.fox.one/api/account/login
-
+Dev https://dev-gateway.fox.one/
+Product https://openapi.fox.one/
 
 
 ### Example 

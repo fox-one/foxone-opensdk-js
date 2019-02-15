@@ -19,7 +19,7 @@ test('salt password', () => {
 
 test('login', async () => {
   const passport = new Passport({
-    host: 'https://dev-cloud.fox.one',
+    host: 'https://dev-gateway.fox.one',
     merchantId: '5c8a9491dca25af694004d5e1711b217',
   });
   
