@@ -1,6 +1,6 @@
-#  F1Passport SDK
+#  @foxone/passport
 
-F1Passport SDK 是Fox.One Cloud API 的接口的封装。
+@foxone/passport SDK 是Fox.One API 的接口的封装。
 
 * 滑块
 * 用户登陆
@@ -8,7 +8,7 @@ F1Passport SDK 是Fox.One Cloud API 的接口的封装。
 * 获取用户信息
 * 商户登陆
 
-Fox.One Cloud API 以及 GateWay API 的接口都需要签名和生成动态的Token，PassportSDK 同时提供了访问网关的签名API
+Fox.One API 的接口都需要签名和生成动态的Token， PassportSDK 同时提供了访问API 的签名函数
 
 * 生成Token
 * 解析Token
@@ -18,12 +18,12 @@ Fox.One Cloud API 以及 GateWay API 的接口都需要签名和生成动态的T
 ## 安装
 
 ```bash
-yarn add f1-passport
+yarn add @foxone/passport
 ```
 
 ## 使用
 
-Passport 不会存储 Session 和用户信息，由使用F1-Passport的接入放自行存储
+Passport 不会存储 Session 和用户信息，由使用 @foxone/passport 的接入方自行存储
 Passport 登陆后获取到的数据结构大致如下，**session为后续接入方发送请求时签名的必要字段**
 
 ```json
@@ -42,7 +42,7 @@ Passport 登陆后获取到的数据结构大致如下，**session为后续接�
 ### Passport 
 用户登陆模块
 ```javascript
-import { Passport } from 'f1-passport';
+import { Passport } from '@foxone/passport';
 
 // 实例化 Passport
 const passport = new Passport({
@@ -98,7 +98,7 @@ return {user:{}}
 ### Admin
 商户模块
 ```javascript
-import { Admin } from 'f1-passport';
+import { Admin } from '@foxone/passport';
 
 const admin = new Admin({
   host: constants.adminHost,
@@ -111,7 +111,7 @@ return {admin:{},session:{}}
 ### Sign
 签名函数
 ```javascript
-import { generateSignRequest, generateSignAndJWT } from 'f1-passport';
+import { generateSignRequest, generateSignAndJWT } from '@foxone/passport';
 
 const signData = generateSignRequest({ method: 'get', url: pathAndQuery, body: options.body });
 return { uri, body, sign }
@@ -120,7 +120,7 @@ return { uri, body, sign }
 ### Token
 生成请求的Token
 ```javascript
-import { generateToken, decodeToken } from 'f1-passport';
+import { generateToken, decodeToken } from '@foxone/passport';
 
 const token = await generateToken({ key: session.key, secret: session.secret, requestSign: signData.sign });
 
@@ -128,7 +128,7 @@ const token = await generateToken({ key: session.key, secret: session.secret, re
 ### Password Salt
 密码加盐
 ```javascript
-import { passwordSalt } from 'f1-passport';
+import { passwordSalt } from '@foxone/passport';
 const salePassword = passwordSalt(password);
 ```
 ## **Fox Cloud API 和 Gateway API 的调用说明**
