@@ -1,6 +1,6 @@
 {
   "name": "@foxone/passport",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "license": "MIT",
@@ -11,9 +11,11 @@
     "@types/axios": "^0.14.0",
     "@types/base64url": "^2.0.0",
     "@types/crypto-js": "^3.1.43",
+    "@types/fingerprintjs2": "^2.0.0",
     "@types/uuid": "^3.4.4",
     "axios": "^0.18.0",
     "crypto-js": "^3.1.9-1",
+    "fingerprintjs2": "^2.0.6",
     "node-jose": "^1.1.0"
   },
   "repository": {
