@@ -35,44 +35,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var http_1 = require("./http");
-var sign_js_1 = require("./sign.js");
-var Admin = /** @class */ (function () {
-    function Admin(props) {
-        this.host = props.host;
+var base64url_1 = require("base64url");
+var detect_browser_1 = require("detect-browser");
+var Fingerprint2 = require("fingerprintjs2");
+var DeviceInfo = /** @class */ (function () {
+    function DeviceInfo(deviceId, deviceName) {
+        this.platform = 'web';
+        this.deviceId = deviceId;
+        this.deviceName = deviceName;
     }
-    Admin.prototype.login = function (login) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, method, body;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        url = '/admin/login';
-                        method = 'post';
-                        body = {
-                            password: sign_js_1.passwordSalt(login.password),
-                            username: login.username,
-                        };
-                        return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
+    DeviceInfo.prototype.description = function () {
+        var info = {
+            device_id: this.deviceId,
+            device_name: this.deviceName,
+            platform: this.platform,
+        };
+        return base64url_1.default.encode(JSON.stringify(info));
     };
-    Admin.prototype.postRequest = function (signData) {
-        return __awaiter(this, void 0, void 0, function () {
-            var uri;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        uri = "" + this.host + signData.uri;
-                        return [4 /*yield*/, http_1.default.post(uri, signData.body)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    return Admin;
+    return DeviceInfo;
 }());
-exports.default = Admin;
-//# sourceMappingURL=admin.js.map
+var DeviceManager = /** @class */ (function () {
+    function DeviceManager() {
+        if (DeviceManager.instance) {
+            throw new Error('Error - use Device.getInstance()');
+        }
+    }
+    DeviceManager.getInstance = function () {
+        DeviceManager.instance = DeviceManager.instance || new DeviceManager();
+        return DeviceManager.instance;
+    };
+    DeviceManager.prototype.getDeviceinfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var components, values, hashCode, platform;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.deviceInfo != null)) return [3 /*break*/, 1];
+                        return [2 /*return*/, this.deviceInfo.description()];
+                    case 1: return [4 /*yield*/, Fingerprint2.getPromise()];
+                    case 2:
+                        components = _a.sent();
+                        values = components.map(function (component) { return component.value; });
+                        hashCode = Fingerprint2.x64hash128(values.join(''), 31);
+                        platform = this.getExplorerInfo();
+                        this.deviceInfo = new DeviceInfo(hashCode, "" + platform);
+                        return [2 /*return*/, this.deviceInfo.description()];
+                }
+            });
+        });
+    };
+    DeviceManager.prototype.getExplorerInfo = function () {
+        var browser = detect_browser_1.detect();
+        if (browser) {
+            return browser.name + "/" + browser.version;
+        }
+        else {
+            return "unknow";
+        }
+    };
+    return DeviceManager;
+}());
+exports.default = DeviceManager;
+//# sourceMappingURL=device.js.map

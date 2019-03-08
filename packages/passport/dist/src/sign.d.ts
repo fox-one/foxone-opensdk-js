@@ -17,7 +17,7 @@ export declare function generateSignAndJWT(request: {
     uri: string;
     body: any;
     headers: {
-        "Authorization": string;
+        Authorization: string;
     };
 }>;
 export declare function passwordSalt(password: string): string;

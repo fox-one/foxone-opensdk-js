@@ -15,6 +15,7 @@
     "@types/uuid": "^3.4.4",
     "axios": "^0.18.0",
     "crypto-js": "^3.1.9-1",
+    "detect-browser": "^4.1.0",
     "fingerprintjs2": "^2.0.6",
     "node-jose": "^1.1.0"
   },
@@ -35,13 +36,15 @@
     "source-map-loader": "^0.2.4",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.3",
-    "typescript": "^3.2.4",
+    "tslint": "^5.13.1",
+    "typescript": "^3.3.3333",
     "unminified-webpack-plugin": "^2.0.0",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
   },
   "scripts": {
+    "lint": "tslint -c tslint.json src/**",
     "build": "tsc",
-    "pub": "tsc && yarn publish"
+    "release": "tsc && yarn publish"
   }
 }

@@ -35,13 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var uuid_1 = require("uuid");
 var CryptoJS = require("crypto-js");
+var uuid_1 = require("uuid");
 var token_1 = require("./token");
 function generateSignRequest(request) {
     var ts = getTimestamp();
     var nonce = uuid_1.v4();
-    var uri = request.url, body = request.body;
+    var uri = request.url;
+    var body = request.body;
     if (uri.indexOf('?') > 0) {
         uri = uri + "&_ts=" + ts + "&_nonce=" + nonce;
     }
@@ -68,13 +69,13 @@ function generateSignAndJWT(request) {
                     sign = signData.sign, uri = signData.uri;
                     keyAndSign = {
                         key: key,
+                        requestSign: sign,
                         secret: secret,
-                        requestSign: sign
                     };
                     return [4 /*yield*/, token_1.generateToken(keyAndSign)];
                 case 1:
                     token = _a.sent();
-                    return [2 /*return*/, { uri: uri, body: body, headers: { "Authorization": "Bearer " + token } }];
+                    return [2 /*return*/, { uri: uri, body: body, headers: { Authorization: "Bearer " + token } }];
             }
         });
     });
