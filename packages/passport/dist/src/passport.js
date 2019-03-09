@@ -214,7 +214,7 @@ var Passport = /** @class */ (function () {
                         return [4 /*yield*/, device.getDeviceinfo()];
                     case 1:
                         deviceInfo = _a.sent();
-                        headers = __assign({ device_info: deviceInfo }, this.defaulutHeader());
+                        headers = __assign({ 'device-info': deviceInfo }, this.defaulutHeader());
                         return [4 /*yield*/, http_1.default.post(uri, signData.body, { headers: headers })];
                     case 2: return [2 /*return*/, _a.sent()];
                 }

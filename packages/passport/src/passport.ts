@@ -112,7 +112,7 @@ export default class Passport {
     const uri = `${this.host}${signData.uri}`;
     const device = DeviceManager.getInstance();
     const deviceInfo = await device.getDeviceinfo();
-    const headers = { device_info: deviceInfo, ...this.defaulutHeader() };
+    const headers = { 'device-info': deviceInfo, ...this.defaulutHeader() };
     return await http.post(uri, signData.body, { headers });
   }
 
