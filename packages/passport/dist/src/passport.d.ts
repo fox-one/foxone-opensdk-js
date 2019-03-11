@@ -38,6 +38,10 @@ export default class Passport {
         email?: string;
         password: string;
     }): Promise<any>;
+    loginWithTFA(login: {
+        tfaToken: string;
+        code: string;
+    }): Promise<any>;
     getUserDetail(secretInfo: {
         key: string;
         secret: string;

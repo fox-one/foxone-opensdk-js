@@ -49,6 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var device_1 = require("./device");
 var http_1 = require("./http");
 var sign_1 = require("./sign");
+var tfaError_1 = require("./tfaError");
 var Passport = /** @class */ (function () {
     function Passport(props) {
         this.host = props.host;
@@ -183,6 +184,24 @@ var Passport = /** @class */ (function () {
             });
         });
     };
+    Passport.prototype.loginWithTFA = function (login) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method, body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/login_tfa';
+                        method = 'post';
+                        body = {
+                            code: login.code,
+                            tfa_token: login.tfaToken,
+                        };
+                        return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     Passport.prototype.getUserDetail = function (secretInfo) {
         return __awaiter(this, void 0, void 0, function () {
             var url, method, key, secret, signData, uri, headers;
@@ -205,7 +224,7 @@ var Passport = /** @class */ (function () {
     };
     Passport.prototype.postRequest = function (signData) {
         return __awaiter(this, void 0, void 0, function () {
-            var uri, device, deviceInfo, headers;
+            var uri, device, deviceInfo, headers, error_1, data, code, tfa_token, msg, tfaError;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -215,8 +234,24 @@ var Passport = /** @class */ (function () {
                     case 1:
                         deviceInfo = _a.sent();
                         headers = __assign({ 'device-info': deviceInfo }, this.defaulutHeader());
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, http_1.default.post(uri, signData.body, { headers: headers })];
-                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4:
+                        error_1 = _a.sent();
+                        data = error_1.response.data;
+                        code = data.code, tfa_token = data.data.tfa_token, msg = data.msg;
+                        if (code === 1110) {
+                            tfaError = new tfaError_1.default(code, msg, tfa_token);
+                            throw tfaError;
+                        }
+                        else {
+                            throw error_1;
+                        }
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

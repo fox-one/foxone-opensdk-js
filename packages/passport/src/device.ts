@@ -16,7 +16,7 @@ class DeviceInfo {
     const info = {
       device_id: this.deviceId,
       device_name: this.deviceName,
-      platform: this.platform,
+      device_platform: this.platform,
 
     };
     return base64url.encode(JSON.stringify(info));

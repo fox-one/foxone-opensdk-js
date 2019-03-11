@@ -1,6 +1,7 @@
 import DeviceManager from './device';
 import http from './http';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
+import TFAError from './tfaError';
 
 export default class Passport {
   private host: string;
@@ -95,6 +96,17 @@ export default class Passport {
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
+  public async loginWithTFA(login: { tfaToken: string, code: string }) {
+    const url = '/api/account/login_tfa';
+    const method = 'post';
+    const body = {
+      code: login.code,
+      tfa_token: login.tfaToken,
+    };
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
   public async getUserDetail(secretInfo: { key: string, secret: string }) {
     const url = '/api/account/detail';
     const method = 'get';
@@ -113,7 +125,20 @@ export default class Passport {
     const device = DeviceManager.getInstance();
     const deviceInfo = await device.getDeviceinfo();
     const headers = { 'device-info': deviceInfo, ...this.defaulutHeader() };
-    return await http.post(uri, signData.body, { headers });
+
+    try {
+      return await http.post(uri, signData.body, { headers });
+    } catch (error) {
+      const data = error.response.data;
+      const { code, data: { tfa_token }, msg } = data;
+
+      if (code === 1110) {
+        const tfaError = new TFAError(code, msg, tfa_token);
+        throw tfaError;
+      } else {
+        throw error;
+      }
+    }
   }
 
   private defaulutHeader() {
