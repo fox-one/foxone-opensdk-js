@@ -11,6 +11,8 @@ import SessionManager from './sessionManange';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
 import TFAError from './tfaError';
 
+export const TFARequireCode = 1110;
+
 export default class Account {
   public static getInstance(): Account {
     Account.instance = Account.instance || new Account();
@@ -234,10 +236,10 @@ export default class Account {
     return await http.request({ url: uri, headers, method, data: body });
   }
 
-  public async isLogin() {
+  public isLogin() {
     try {
-      const session = await this.sessionManager.getSession();
-      const user = await this.sessionManager.getUser();
+      const session = this.sessionManager.getSyncSession();
+      const user = this.sessionManager.getSyncUser();
       if (session && user) {
         return true;
       } else {
@@ -257,6 +259,14 @@ export default class Account {
     return await this.sessionManager.getSession();
   }
 
+  public getSyncSession(): Session | null {
+    return this.sessionManager.getSyncSession();
+  }
+
+  public getSyncUser(): User | null {
+    return this.sessionManager.getSyncUser();
+  }
+
   public async getUser(): Promise<User | null> {
     return await this.sessionManager.getUser();
   }
@@ -274,14 +284,14 @@ export default class Account {
     try {
       return await http.post(uri, signData.body, { headers });
     } catch (error) {
-
+      debugger
       const data = error.response.data;
       const { code } = data;
 
-      if (code === 1110) {
+      if (code === TFARequireCode) {
         const { data: { tfa_token }, msg } = data;
         const tfaError = new TFAError(code, msg, tfa_token);
-        return tfaError;
+        throw tfaError;
       } else {
         throw error;
       }

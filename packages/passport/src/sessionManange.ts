@@ -4,17 +4,36 @@ import User from './model/user';
 
 const SESSION_KEY = 'account-session';
 const USER_KEY = 'account-user';
+const PASSPORT_KEY = 'foxone-passport'
 
 export default class SessionManager {
   constructor() {
     localforage.config({
       driver: localforage.LOCALSTORAGE,
-      name: 'foxone-Account',
+      name: PASSPORT_KEY,
     });
   }
 
   public async getSession(): Promise<Session | null> {
     return await localforage.getItem(SESSION_KEY);
+  }
+
+  public getSyncSession(): Session | null {
+    let value = localStorage.getItem(`${PASSPORT_KEY}/${SESSION_KEY}`);
+    if (value) {
+      return JSON.parse(value)
+    } else {
+      return null;
+    }
+  }
+
+  public getSyncUser(): User | null {
+    let value = localStorage.getItem(`${PASSPORT_KEY}/${USER_KEY}`);
+    if (value) {
+      return JSON.parse(value)
+    } else {
+      return null;
+    }
   }
 
   public async getUser(): Promise<User | null> {
