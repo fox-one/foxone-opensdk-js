@@ -1,10 +1,16 @@
-import * as localforage from 'localforage';
+
 import DeviceManager from './device';
 import http from './http';
-import Session from './Model/session';
+import ChangePassword from './Model/changePassword';
 import KYCProfile from './Model/kycProfile';
+import RequestResetPassword from './Model/requestResetPassword';
+import ResetPassword from './Model/resetPassword';
+
+import Session from './Model/session';
+import SessionManager from './sessionManange';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
 import TFAError from './tfaError';
+import User from './Model/user';
 
 export default class Account {
   public static getInstance(): Account {
@@ -15,13 +21,11 @@ export default class Account {
 
   private host: string = '';
   private merchantId: string = '';
+  private sessionManager: SessionManager = new SessionManager();
 
-  constructor() {
-    localforage.config({
-      driver: localforage.LOCALSTORAGE,
-      name: 'foxone-Account',
-    });
-  }
+  // constructor() {
+
+  // }
 
   public config(config: { host: string, merchantId: string }) {
     this.host = config.host;
@@ -69,7 +73,7 @@ export default class Account {
 
     const session = await this.postRequest(generateSignRequest({ method, url, body }));
 
-    await this.saveSession(session);
+    await this.sessionManager.saveAuthSession(session);
 
     return session;
   }
@@ -85,7 +89,7 @@ export default class Account {
     };
 
     const session = await this.postRequest(generateSignRequest({ method, url, body }));
-    await this.saveSession(session);
+    await this.sessionManager.saveAuthSession(session);
     return session;
   }
 
@@ -99,7 +103,7 @@ export default class Account {
 
     const session = await this.postRequest(generateSignRequest({ method, url, body }));
 
-    await this.saveSession(session);
+    await this.sessionManager.saveAuthSession(session);
     return session;
   }
 
@@ -122,7 +126,7 @@ export default class Account {
     }
 
     const session = await this.postRequest(generateSignRequest({ method, url, body }));
-    await this.saveSession(session);
+    await this.sessionManager.saveAuthSession(session);
 
     return session;
   }
@@ -143,13 +147,6 @@ export default class Account {
     const method = 'get';
 
     return await this.sendRequest({ url, method });
-  }
-
-  public async getSession() {
-    const json: Session = await localforage.getItem('account-session');
-    const { key, secret } = json;
-
-    return new Session(key, secret);
   }
 
   public async getKYCProfile() {
@@ -193,8 +190,43 @@ export default class Account {
     return await this.sendRequest({ url, method, body: valiadte });
   }
 
+  public async severLogout() {
+    const url = '/api/account/logout';
+    const method = 'post';
+
+    return await this.sendRequest({ url, method });
+  }
+
+  public async requestResetPassword(requestResetPassword: RequestResetPassword) {
+    const url = '/api/account/request_reset_password';
+    const method = 'post';
+
+    return await this.sendRequest({ url, method, body: requestResetPassword });
+  }
+
+  public async resetPassword(resetPassword: ResetPassword) {
+    const url = '/api/account/reset_password';
+    const method = 'post';
+
+    return await this.sendRequest({ url, method, body: resetPassword });
+  }
+
+  public async changePassword(changePassword: ChangePassword) {
+    const password = passwordSalt(changePassword.password);
+    const newPassword = passwordSalt(changePassword.new_password);
+
+    const url = '/api/account/modify_password';
+    const method = 'post';
+
+    return await this.sendRequest({ url, method, body: { password, new_password: newPassword } });
+  }
+
   public async sendRequest(request: { method: string, url: string, body?: any }) {
-    const session = await this.getSession();
+    const session = await this.sessionManager.getSession();
+    if (!session) {
+      throw Error("401");
+    }
+
     const { key, secret } = session;
     const { method, url, body } = request;
 
@@ -207,13 +239,35 @@ export default class Account {
     return await http.request({ url: uri, headers, method, data: body });
   }
 
-  private defaulutHeader() {
-    return { 'fox-merchant-id': this.merchantId };
+  public async isLogin() {
+    try {
+      const session = await this.sessionManager.getSession();
+      const user = await this.sessionManager.getUser();
+      if (session && user) {
+        return true;
+      } else {
+        return false
+      }
+    } catch {
+      return false;
+    }
   }
 
-  private async saveSession(value: any) {
-    const { session } = value;
-    return await localforage.setItem('account-session', session);
+  public async logout() {
+    await this.severLogout();
+    await this.sessionManager.deleteSession();
+  }
+
+  public async getSession(): Promise<Session | null> {
+    return await this.sessionManager.getSession();
+  }
+
+  public async getUser(): Promise<User | null> {
+    return await this.sessionManager.getUser();
+  }
+
+  private defaulutHeader() {
+    return { 'fox-merchant-id': this.merchantId };
   }
 
   private async postRequest(signData: { uri: string, body: any }) {
