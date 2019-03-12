@@ -217,7 +217,7 @@ var Account = /** @class */ (function () {
     };
     Account.prototype.loginWithTFA = function (login) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, method, body;
+            var url, method, body, session;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -228,7 +228,12 @@ var Account = /** @class */ (function () {
                             tfa_token: login.tfaToken,
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1:
+                        session = _a.sent();
+                        return [4 /*yield*/, this.sessionManager.saveAuthSession(session)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, session];
                 }
             });
         });
@@ -331,7 +336,7 @@ var Account = /** @class */ (function () {
             });
         });
     };
-    Account.prototype.severLogout = function () {
+    Account.prototype.logout = function () {
         return __awaiter(this, void 0, void 0, function () {
             var url, method;
             return __generator(this, function (_a) {
@@ -429,20 +434,8 @@ var Account = /** @class */ (function () {
             return false;
         }
     };
-    Account.prototype.logout = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.severLogout()];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.sessionManager.deleteSession()];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
+    Account.prototype.removeSession = function () {
+        this.sessionManager.deleteSession();
     };
     Account.prototype.getSession = function () {
         return __awaiter(this, void 0, void 0, function () {

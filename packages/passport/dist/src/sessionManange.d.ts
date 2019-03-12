@@ -6,6 +6,6 @@ export default class SessionManager {
     getSyncSession(): Session | null;
     getSyncUser(): User | null;
     getUser(): Promise<User | null>;
-    deleteSession(): Promise<[void, void]>;
+    deleteSession(): void;
     saveAuthSession(authSession: any): Promise<any>;
 }

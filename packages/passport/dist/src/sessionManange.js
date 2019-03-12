@@ -88,11 +88,8 @@ var SessionManager = /** @class */ (function () {
         });
     };
     SessionManager.prototype.deleteSession = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, Promise.all([localforage.removeItem(SESSION_KEY), localforage.removeItem(USER_KEY)])];
-            });
-        });
+        localStorage.removeItem(PASSPORT_KEY + "/" + SESSION_KEY);
+        localStorage.removeItem(PASSPORT_KEY + "/" + USER_KEY);
     };
     SessionManager.prototype.saveAuthSession = function (authSession) {
         return __awaiter(this, void 0, void 0, function () {

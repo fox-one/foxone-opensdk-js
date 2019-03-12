@@ -63,7 +63,7 @@ export declare class Account {
     turnOffTFA(valiadte: {
         code: string;
     }): Promise<any>;
-    severLogout(): Promise<any>;
+    logout(): Promise<any>;
     requestResetPassword(requestResetPassword: RequestResetPassword): Promise<any>;
     resetPassword(resetPassword: ResetPassword): Promise<any>;
     changePassword(changePassword: ChangePassword): Promise<any>;
@@ -73,7 +73,7 @@ export declare class Account {
         body?: any;
     }): Promise<any>;
     isLogin(): boolean;
-    logout(): Promise<void>;
+    removeSession(): void;
     getSession(): Promise<Session | null>;
     getSyncSession(): Session | null;
     getSyncUser(): User | null;

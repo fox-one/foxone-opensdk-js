@@ -136,7 +136,10 @@ export class Account {
       tfa_token: login.tfaToken,
     };
 
-    return await this.postRequest(generateSignRequest({ method, url, body }));
+    const session = await this.postRequest(generateSignRequest({ method, url, body }));
+    await this.sessionManager.saveAuthSession(session);
+
+    return session;
   }
 
   public async getUserDetail() {
@@ -187,7 +190,7 @@ export class Account {
     return await this.sendRequest({ url, method, body: valiadte });
   }
 
-  public async severLogout() {
+  public async logout() {
     const url = '/api/account/logout';
     const method = 'post';
 
@@ -250,9 +253,8 @@ export class Account {
     }
   }
 
-  public async logout() {
-    await this.severLogout();
-    await this.sessionManager.deleteSession();
+  public removeSession() {
+    this.sessionManager.deleteSession();
   }
 
   public async getSession(): Promise<Session | null> {

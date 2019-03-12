@@ -4,7 +4,7 @@ import User from './model/user';
 
 const SESSION_KEY = 'account-session';
 const USER_KEY = 'account-user';
-const PASSPORT_KEY = 'foxone-passport'
+const PASSPORT_KEY = 'foxone-passport';
 
 export default class SessionManager {
   constructor() {
@@ -19,18 +19,18 @@ export default class SessionManager {
   }
 
   public getSyncSession(): Session | null {
-    let value = localStorage.getItem(`${PASSPORT_KEY}/${SESSION_KEY}`);
+    const value = localStorage.getItem(`${PASSPORT_KEY}/${SESSION_KEY}`);
     if (value) {
-      return JSON.parse(value)
+      return JSON.parse(value);
     } else {
       return null;
     }
   }
 
   public getSyncUser(): User | null {
-    let value = localStorage.getItem(`${PASSPORT_KEY}/${USER_KEY}`);
+    const value = localStorage.getItem(`${PASSPORT_KEY}/${USER_KEY}`);
     if (value) {
-      return JSON.parse(value)
+      return JSON.parse(value);
     } else {
       return null;
     }
@@ -41,8 +41,9 @@ export default class SessionManager {
     return user;
   }
 
-  public async deleteSession() {
-     return Promise.all([localforage.removeItem(SESSION_KEY), localforage.removeItem(USER_KEY)]);
+  public deleteSession() {
+     localStorage.removeItem(`${PASSPORT_KEY}/${SESSION_KEY}`);
+     localStorage.removeItem(`${PASSPORT_KEY}/${USER_KEY}`);
   }
 
   public async saveAuthSession(authSession: any) {
