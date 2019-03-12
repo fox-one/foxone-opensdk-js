@@ -1,11 +1,15 @@
-import Session from './Model/session';
+import ChangePassword from './Model/changePassword';
 import KYCProfile from './Model/kycProfile';
+import RequestResetPassword from './Model/requestResetPassword';
+import ResetPassword from './Model/resetPassword';
+import Session from './Model/session';
+import User from './Model/user';
 export default class Account {
     static getInstance(): Account;
     private static instance;
     private host;
     private merchantId;
-    constructor();
+    private sessionManager;
     config(config: {
         host: string;
         merchantId: string;
@@ -48,7 +52,6 @@ export default class Account {
         code: string;
     }): Promise<any>;
     getUserDetail(): Promise<any>;
-    getSession(): Promise<Session>;
     getKYCProfile(): Promise<any>;
     updateKYCProfile(profile: KYCProfile): Promise<any>;
     createKYCProfile(profile: KYCProfile): Promise<any>;
@@ -59,12 +62,19 @@ export default class Account {
     turnOffTFA(valiadte: {
         code: string;
     }): Promise<any>;
+    severLogout(): Promise<any>;
+    requestResetPassword(requestResetPassword: RequestResetPassword): Promise<any>;
+    resetPassword(resetPassword: ResetPassword): Promise<any>;
+    changePassword(changePassword: ChangePassword): Promise<any>;
     sendRequest(request: {
         method: string;
         url: string;
         body?: any;
     }): Promise<any>;
+    isLogin(): Promise<boolean>;
+    logout(): Promise<void>;
+    getSession(): Promise<Session | null>;
+    getUser(): Promise<User | null>;
     private defaulutHeader;
-    private saveSession;
     private postRequest;
 }

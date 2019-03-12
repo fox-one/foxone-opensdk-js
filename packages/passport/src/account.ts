@@ -7,10 +7,10 @@ import RequestResetPassword from './Model/requestResetPassword';
 import ResetPassword from './Model/resetPassword';
 
 import Session from './Model/session';
+import User from './Model/user';
 import SessionManager from './sessionManange';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
 import TFAError from './tfaError';
-import User from './Model/user';
 
 export default class Account {
   public static getInstance(): Account {
@@ -224,7 +224,7 @@ export default class Account {
   public async sendRequest(request: { method: string, url: string, body?: any }) {
     const session = await this.sessionManager.getSession();
     if (!session) {
-      throw Error("401");
+      throw Error('401');
     }
 
     const { key, secret } = session;
@@ -246,7 +246,7 @@ export default class Account {
       if (session && user) {
         return true;
       } else {
-        return false
+        return false;
       }
     } catch {
       return false;

@@ -46,25 +46,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var localforage = require("localforage");
 var device_1 = require("./device");
 var http_1 = require("./http");
-var session_1 = require("./Model/session");
+var sessionManange_1 = require("./sessionManange");
 var sign_1 = require("./sign");
 var tfaError_1 = require("./tfaError");
 var Account = /** @class */ (function () {
     function Account() {
         this.host = '';
         this.merchantId = '';
-        localforage.config({
-            driver: localforage.LOCALSTORAGE,
-            name: 'foxone-Account',
-        });
+        this.sessionManager = new sessionManange_1.default();
     }
     Account.getInstance = function () {
         Account.instance = Account.instance || new Account();
         return Account.instance;
     };
+    // constructor() {
+    // }
     Account.prototype.config = function (config) {
         this.host = config.host;
         this.merchantId = config.merchantId;
@@ -129,7 +127,7 @@ var Account = /** @class */ (function () {
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1:
                         session = _a.sent();
-                        return [4 /*yield*/, this.saveSession(session)];
+                        return [4 /*yield*/, this.sessionManager.saveAuthSession(session)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, session];
@@ -154,7 +152,7 @@ var Account = /** @class */ (function () {
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1:
                         session = _a.sent();
-                        return [4 /*yield*/, this.saveSession(session)];
+                        return [4 /*yield*/, this.sessionManager.saveAuthSession(session)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, session];
@@ -177,7 +175,7 @@ var Account = /** @class */ (function () {
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1:
                         session = _a.sent();
-                        return [4 /*yield*/, this.saveSession(session)];
+                        return [4 /*yield*/, this.sessionManager.saveAuthSession(session)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, session];
@@ -210,7 +208,7 @@ var Account = /** @class */ (function () {
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1:
                         session = _a.sent();
-                        return [4 /*yield*/, this.saveSession(session)];
+                        return [4 /*yield*/, this.sessionManager.saveAuthSession(session)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, session];
@@ -246,20 +244,6 @@ var Account = /** @class */ (function () {
                         method = 'get';
                         return [4 /*yield*/, this.sendRequest({ url: url, method: method })];
                     case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    Account.prototype.getSession = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var json, key, secret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, localforage.getItem('account-session')];
-                    case 1:
-                        json = _a.sent();
-                        key = json.key, secret = json.secret;
-                        return [2 /*return*/, new session_1.default(key, secret)];
                 }
             });
         });
@@ -348,14 +332,75 @@ var Account = /** @class */ (function () {
             });
         });
     };
+    Account.prototype.severLogout = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/logout';
+                        method = 'post';
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.requestResetPassword = function (requestResetPassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/request_reset_password';
+                        method = 'post';
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: requestResetPassword })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.resetPassword = function (resetPassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/reset_password';
+                        method = 'post';
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: resetPassword })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.changePassword = function (changePassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var password, newPassword, url, method;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        password = sign_1.passwordSalt(changePassword.password);
+                        newPassword = sign_1.passwordSalt(changePassword.new_password);
+                        url = '/api/account/modify_password';
+                        method = 'post';
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: { password: password, new_password: newPassword } })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     Account.prototype.sendRequest = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var session, key, secret, method, url, body, signData, uri, defautHeader, headers;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getSession()];
+                    case 0: return [4 /*yield*/, this.sessionManager.getSession()];
                     case 1:
                         session = _a.sent();
+                        if (!session) {
+                            throw Error('401');
+                        }
                         key = session.key, secret = session.secret;
                         method = request.method, url = request.url, body = request.body;
                         return [4 /*yield*/, sign_1.generateSignAndJWT({ method: method, url: url, key: key, secret: secret, body: body })];
@@ -370,21 +415,71 @@ var Account = /** @class */ (function () {
             });
         });
     };
-    Account.prototype.defaulutHeader = function () {
-        return { 'fox-merchant-id': this.merchantId };
-    };
-    Account.prototype.saveSession = function (value) {
+    Account.prototype.isLogin = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var session;
+            var session, user, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.sessionManager.getSession()];
+                    case 1:
+                        session = _b.sent();
+                        return [4 /*yield*/, this.sessionManager.getUser()];
+                    case 2:
+                        user = _b.sent();
+                        if (session && user) {
+                            return [2 /*return*/, true];
+                        }
+                        else {
+                            return [2 /*return*/, false];
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        _a = _b.sent();
+                        return [2 /*return*/, false];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Account.prototype.logout = function () {
+        return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        session = value.session;
-                        return [4 /*yield*/, localforage.setItem('account-session', session)];
+                    case 0: return [4 /*yield*/, this.severLogout()];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.sessionManager.deleteSession()];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Account.prototype.getSession = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sessionManager.getSession()];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
+    };
+    Account.prototype.getUser = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sessionManager.getUser()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.defaulutHeader = function () {
+        return { 'fox-merchant-id': this.merchantId };
     };
     Account.prototype.postRequest = function (signData) {
         return __awaiter(this, void 0, void 0, function () {

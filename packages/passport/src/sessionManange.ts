@@ -2,8 +2,8 @@ import * as localforage from 'localforage';
 import Session from './Model/session';
 import User from './Model/user';
 
-const SESSION_KEY = 'account-session'
-const USER_KEY = 'account-user'
+const SESSION_KEY = 'account-session';
+const USER_KEY = 'account-user';
 
 export default class SessionManager {
   constructor() {
@@ -22,8 +22,8 @@ export default class SessionManager {
     return user;
   }
 
-  public async deleteSession() { 
-     return Promise.all([localforage.removeItem(SESSION_KEY), localforage.removeItem(USER_KEY)])
+  public async deleteSession() {
+     return Promise.all([localforage.removeItem(SESSION_KEY), localforage.removeItem(USER_KEY)]);
   }
 
   public async saveAuthSession(authSession: any) {
