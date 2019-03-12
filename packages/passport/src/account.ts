@@ -1,4 +1,3 @@
-
 import DeviceManager from './device';
 import http from './http';
 import ChangePassword from './model/changePassword';
@@ -166,14 +165,12 @@ export class Account {
   public async createKYCProfile(profile: KYCProfile) {
     const url = '/api/account/kyc/profile';
     const method = 'post';
-
     return await this.sendRequest({ url, method, body: profile });
   }
 
   public async requestEnableTFA() {
     const url = '/api/account/tfa/request';
     const method = 'post';
-
     return await this.sendRequest({ url, method });
   }
 
@@ -186,35 +183,30 @@ export class Account {
   public async turnOffTFA(valiadte: { code: string }) {
     const url = '/api/account/tfa/off';
     const method = 'post';
-
     return await this.sendRequest({ url, method, body: valiadte });
   }
 
   public async logout() {
     const url = '/api/account/logout';
     const method = 'post';
-
     return await this.sendRequest({ url, method });
   }
 
   public async requestResetPassword(requestResetPassword: RequestResetPassword) {
     const url = '/api/account/request_reset_password';
     const method = 'post';
-
     return await this.sendRequest({ url, method, body: requestResetPassword });
   }
 
   public async resetPassword(resetPassword: ResetPassword) {
     const url = '/api/account/reset_password';
     const method = 'post';
-
     return await this.sendRequest({ url, method, body: resetPassword });
   }
 
   public async changePassword(changePassword: ChangePassword) {
     const password = passwordSalt(changePassword.password);
     const newPassword = passwordSalt(changePassword.new_password);
-
     const url = '/api/account/modify_password';
     const method = 'post';
 
@@ -286,7 +278,6 @@ export class Account {
     try {
       return await http.post(uri, signData.body, { headers });
     } catch (error) {
-      debugger
       const data = error.response.data;
       const { code } = data;
 
