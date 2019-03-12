@@ -51,6 +51,7 @@ var http_1 = require("./http");
 var sessionManange_1 = require("./sessionManange");
 var sign_1 = require("./sign");
 var tfaError_1 = require("./tfaError");
+exports.TFARequireCode = 1110;
 var Account = /** @class */ (function () {
     function Account() {
         this.host = '';
@@ -414,32 +415,19 @@ var Account = /** @class */ (function () {
         });
     };
     Account.prototype.isLogin = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var session, user, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.sessionManager.getSession()];
-                    case 1:
-                        session = _b.sent();
-                        return [4 /*yield*/, this.sessionManager.getUser()];
-                    case 2:
-                        user = _b.sent();
-                        if (session && user) {
-                            return [2 /*return*/, true];
-                        }
-                        else {
-                            return [2 /*return*/, false];
-                        }
-                        return [3 /*break*/, 4];
-                    case 3:
-                        _a = _b.sent();
-                        return [2 /*return*/, false];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
+        try {
+            var session = this.sessionManager.getSyncSession();
+            var user = this.sessionManager.getSyncUser();
+            if (session && user) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (_a) {
+            return false;
+        }
     };
     Account.prototype.logout = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -465,6 +453,12 @@ var Account = /** @class */ (function () {
                 }
             });
         });
+    };
+    Account.prototype.getSyncSession = function () {
+        return this.sessionManager.getSyncSession();
+    };
+    Account.prototype.getSyncUser = function () {
+        return this.sessionManager.getSyncUser();
     };
     Account.prototype.getUser = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -498,12 +492,13 @@ var Account = /** @class */ (function () {
                     case 3: return [2 /*return*/, _a.sent()];
                     case 4:
                         error_1 = _a.sent();
+                        debugger;
                         data = error_1.response.data;
                         code = data.code;
-                        if (code === 1110) {
+                        if (code === exports.TFARequireCode) {
                             tfa_token = data.data.tfa_token, msg = data.msg;
                             tfaError = new tfaError_1.default(code, msg, tfa_token);
-                            return [2 /*return*/, tfaError];
+                            throw tfaError;
                         }
                         else {
                             throw error_1;
@@ -516,5 +511,5 @@ var Account = /** @class */ (function () {
     };
     return Account;
 }());
-exports.default = Account;
+exports.Account = Account;
 //# sourceMappingURL=account.js.map

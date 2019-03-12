@@ -38,11 +38,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var localforage = require("localforage");
 var SESSION_KEY = 'account-session';
 var USER_KEY = 'account-user';
+var PASSPORT_KEY = 'foxone-passport';
 var SessionManager = /** @class */ (function () {
     function SessionManager() {
         localforage.config({
             driver: localforage.LOCALSTORAGE,
-            name: 'foxone-Account',
+            name: PASSPORT_KEY,
         });
     }
     SessionManager.prototype.getSession = function () {
@@ -54,6 +55,24 @@ var SessionManager = /** @class */ (function () {
                 }
             });
         });
+    };
+    SessionManager.prototype.getSyncSession = function () {
+        var value = localStorage.getItem(PASSPORT_KEY + "/" + SESSION_KEY);
+        if (value) {
+            return JSON.parse(value);
+        }
+        else {
+            return null;
+        }
+    };
+    SessionManager.prototype.getSyncUser = function () {
+        var value = localStorage.getItem(PASSPORT_KEY + "/" + USER_KEY);
+        if (value) {
+            return JSON.parse(value);
+        }
+        else {
+            return null;
+        }
     };
     SessionManager.prototype.getUser = function () {
         return __awaiter(this, void 0, void 0, function () {

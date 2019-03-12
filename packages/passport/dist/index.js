@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var account_1 = require("./src/account");
-exports.Account = account_1.default;
+exports.Account = account_1.Account;
+exports.TFARequireCode = account_1.TFARequireCode;
 var admin_1 = require("./src/admin");
 exports.Admin = admin_1.default;
 var session_1 = require("./src/Model/session");

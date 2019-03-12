@@ -4,7 +4,8 @@ import RequestResetPassword from './model/requestResetPassword';
 import ResetPassword from './model/resetPassword';
 import Session from './model/session';
 import User from './model/user';
-export default class Account {
+export declare const TFARequireCode = 1110;
+export declare class Account {
     static getInstance(): Account;
     private static instance;
     private host;
@@ -71,9 +72,11 @@ export default class Account {
         url: string;
         body?: any;
     }): Promise<any>;
-    isLogin(): Promise<boolean>;
+    isLogin(): boolean;
     logout(): Promise<void>;
     getSession(): Promise<Session | null>;
+    getSyncSession(): Session | null;
+    getSyncUser(): User | null;
     getUser(): Promise<User | null>;
     private defaulutHeader;
     private postRequest;

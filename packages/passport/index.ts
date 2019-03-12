@@ -1,4 +1,4 @@
-import Account from './src/account';
+import { Account, TFARequireCode } from './src/account';
 import Admin from './src/admin';
 import KYCProfile from './src/Model/kycProfile';
 import Session from './src/Model/session';
@@ -19,4 +19,5 @@ export {
   TFAError,
   Session,
   KYCProfile,
+  TFARequireCode,
 };

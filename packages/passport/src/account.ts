@@ -13,7 +13,7 @@ import TFAError from './tfaError';
 
 export const TFARequireCode = 1110;
 
-export default class Account {
+export class Account {
   public static getInstance(): Account {
     Account.instance = Account.instance || new Account();
     return Account.instance;
