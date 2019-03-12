@@ -1,9 +1,9 @@
-import ChangePassword from './Model/changePassword';
-import KYCProfile from './Model/kycProfile';
-import RequestResetPassword from './Model/requestResetPassword';
-import ResetPassword from './Model/resetPassword';
-import Session from './Model/session';
-import User from './Model/user';
+import ChangePassword from './model/changePassword';
+import KYCProfile from './model/kycProfile';
+import RequestResetPassword from './model/requestResetPassword';
+import ResetPassword from './model/resetPassword';
+import Session from './model/session';
+import User from './model/user';
 export default class Account {
     static getInstance(): Account;
     private static instance;

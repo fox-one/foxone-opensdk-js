@@ -1,13 +1,12 @@
 
 import DeviceManager from './device';
 import http from './http';
-import ChangePassword from './Model/changePassword';
-import KYCProfile from './Model/kycProfile';
-import RequestResetPassword from './Model/requestResetPassword';
-import ResetPassword from './Model/resetPassword';
-
-import Session from './Model/session';
-import User from './Model/user';
+import ChangePassword from './model/changePassword';
+import KYCProfile from './model/kycProfile';
+import RequestResetPassword from './model/requestResetPassword';
+import ResetPassword from './model/resetPassword';
+import Session from './model/session';
+import User from './model/user';
 import SessionManager from './sessionManange';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
 import TFAError from './tfaError';
@@ -22,10 +21,6 @@ export default class Account {
   private host: string = '';
   private merchantId: string = '';
   private sessionManager: SessionManager = new SessionManager();
-
-  // constructor() {
-
-  // }
 
   public config(config: { host: string, merchantId: string }) {
     this.host = config.host;
@@ -224,7 +219,7 @@ export default class Account {
   public async sendRequest(request: { method: string, url: string, body?: any }) {
     const session = await this.sessionManager.getSession();
     if (!session) {
-      throw Error('401');
+      throw Error('Can not find Session');
     }
 
     const { key, secret } = session;
@@ -278,12 +273,13 @@ export default class Account {
 
     try {
       return await http.post(uri, signData.body, { headers });
-
     } catch (error) {
+
       const data = error.response.data;
-      const { code, data: { tfa_token }, msg } = data;
+      const { code } = data;
 
       if (code === 1110) {
+        const { data: { tfa_token }, msg } = data;
         const tfaError = new TFAError(code, msg, tfa_token);
         return tfaError;
       } else {

@@ -1,6 +1,6 @@
 import * as localforage from 'localforage';
-import Session from './Model/session';
-import User from './Model/user';
+import Session from './model/session';
+import User from './model/user';
 
 const SESSION_KEY = 'account-session';
 const USER_KEY = 'account-user';

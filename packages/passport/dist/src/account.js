@@ -61,8 +61,6 @@ var Account = /** @class */ (function () {
         Account.instance = Account.instance || new Account();
         return Account.instance;
     };
-    // constructor() {
-    // }
     Account.prototype.config = function (config) {
         this.host = config.host;
         this.merchantId = config.merchantId;
@@ -399,7 +397,7 @@ var Account = /** @class */ (function () {
                     case 1:
                         session = _a.sent();
                         if (!session) {
-                            throw Error('401');
+                            throw Error('Can not find Session');
                         }
                         key = session.key, secret = session.secret;
                         method = request.method, url = request.url, body = request.body;
@@ -501,8 +499,9 @@ var Account = /** @class */ (function () {
                     case 4:
                         error_1 = _a.sent();
                         data = error_1.response.data;
-                        code = data.code, tfa_token = data.data.tfa_token, msg = data.msg;
+                        code = data.code;
                         if (code === 1110) {
+                            tfa_token = data.data.tfa_token, msg = data.msg;
                             tfaError = new tfaError_1.default(code, msg, tfa_token);
                             return [2 /*return*/, tfaError];
                         }

@@ -130,9 +130,9 @@ export default class Passport {
       return await http.post(uri, signData.body, { headers });
     } catch (error) {
       const data = error.response.data;
-      const { code, data: { tfa_token }, msg } = data;
-
+      const { code } = data;
       if (code === 1110) {
+        const { data: { tfa_token }, msg } = data;
         const tfaError = new TFAError(code, msg, tfa_token);
         throw tfaError;
       } else {
