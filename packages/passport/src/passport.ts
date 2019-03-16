@@ -1,129 +1,153 @@
+import DeviceManager from './device';
 import http from './http';
-import { generateSignRequest, passwordSalt } from './sign';
-import { generateToken } from './token';
-
+import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
+import TFAError from './tfaError';
 
 export default class Passport {
-  host: string;
-  merchantId: string;
+  private host: string;
+  private merchantId: string;
   constructor(props: { host: string, merchantId: string }) {
     this.host = props.host;
-    this.merchantId = props.merchantId
+    this.merchantId = props.merchantId;
   }
 
-  async getCaptcha() {
+  public async getCaptcha() {
     const url = '/api/captcha';
     const method = 'post';
-    const signData = generateSignRequest({ method, url })
-    let uri = `${this.host}${signData.uri}`
-    let res = await http.post(uri)
-    let data = {
+    const signData = generateSignRequest({ method, url });
+    const uri = `${this.host}${signData.uri}`;
+    const res = await http.post(uri);
+    const data = {
       captchaId: res.captcha_id,
-      captchaURL: `${this.host}/api/captcha/${res.captcha_id}.png`
-    }
+      captchaURL: `${this.host}/api/captcha/${res.captcha_id}.png`,
+    };
     return data;
   }
 
-  async requestRegister(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string, email: string }) {
+  public async requestRegister(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string, email: string }) {
     const url = '/api/account/request_register';
     const method = 'post';
     const body = {
+      captcha: request.captchaCode,
+      captcha_id: request.captchaId,
+      email: request.email,
       phone_code: request.regionCode,
       phone_number: request.mobile,
-      captcha_id: request.captchaId,
-      captcha: request.captchaCode,
-      email: request.email
-    }
+    };
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async register(register: { name?: string, code: string, password: string, token: string }) {
+  public async register(register: { name?: string, code: string, password: string, token: string }) {
     const url = '/api/account/register';
     const method = 'post';
     const body = {
-      name: register.name,
       code: register.code,
+      name: register.name,
       password: passwordSalt(register.password),
-      token: register.token
-    }
+      token: register.token,
+    };
+
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async requestLoginSMS(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
+  public async requestLoginSMS(request: { regionCode: string, mobile: string, captchaId: string, captchaCode: string }) {
     const url = '/api/account/request_login_phone';
     const method = 'post';
     const body = {
+      captcha: request.captchaCode,
+      captcha_id: request.captchaId,
       phone_code: request.regionCode,
       phone_number: request.mobile,
-      captcha_id: request.captchaId,
-      captcha: request.captchaCode
-    }
+    };
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async mobileLogin(login: { token: string, mobileCode: string }) {
+  public async mobileLogin(login: { token: string, mobileCode: string }) {
     const url = '/api/account/login_phone';
     const method = 'post';
     const body = {
+      code: login.mobileCode,
       token: login.token,
-      code: login.mobileCode
-    }
+    };
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async login(login: { regionCode?: string , mobile?: string, email?: string, password: string }) {
+  public async login(login: { regionCode?: string, mobile?: string, email?: string, password: string }) {
     const url = '/api/account/login';
     const method = 'post';
     let body: {};
-    let saltPassword = passwordSalt(login.password);
+    const saltPassword = passwordSalt(login.password);
     if (login.email) {
       body = {
         email: login.email,
-        password: saltPassword
-      }
+        password: saltPassword,
+      };
     } else {
       body = {
-        phone_number: login.mobile,
+        password: saltPassword,
         phone_code: login.regionCode,
-        password: saltPassword
-      }
+        phone_number: login.mobile,
+      };
     }
 
     return await this.postRequest(generateSignRequest({ method, url, body }));
   }
 
-  async getUserDetail(secret: { key: string, secret: string }) {
+  public async loginWithTFA(login: { tfaToken: string, code: string }) {
+    const url = '/api/account/login_tfa';
+    const method = 'post';
+    const body = {
+      code: login.code,
+      tfa_token: login.tfaToken,
+    };
+
+    return await this.postRequest(generateSignRequest({ method, url, body }));
+  }
+
+  public async getUserDetail(secretInfo: { key: string, secret: string }) {
     const url = '/api/account/detail';
     const method = 'get';
-    const signData = generateSignRequest({ method, url });
-    const keyAndSign = {
-      key: secret.key,
-      secret: secret.secret,
-      requestSign: signData.sign
+    const { key, secret } = secretInfo;
+
+    const signData = await generateSignAndJWT({ method, url, key, secret });
+
+    const uri = `${this.host}${signData.uri}`;
+    const { headers } = signData;
+
+    return await http.get(uri, { headers, ...this.defaulutHeader() });
+  }
+
+  public async postRequest(signData: { uri: any, body: any, sign?: any }) {
+    const uri = `${this.host}${signData.uri}`;
+    const device = DeviceManager.getInstance();
+    const deviceInfo = await device.getDeviceinfo();
+    const headers = { 'device-info': deviceInfo, ...this.defaulutHeader() };
+
+    try {
+      return await http.post(uri, signData.body, { headers });
+    } catch (error) {
+      const data = error.response.data;
+      const { code } = data;
+      if (code === 1110) {
+        const { data: { tfa_token }, msg } = data;
+        const tfaError = new TFAError(code, msg, tfa_token);
+        throw tfaError;
+      } else {
+        throw error;
+      }
     }
-
-    const token = await generateToken(keyAndSign);
-    const uri = `${this.host}${signData.uri}`
-
-    return await http.get(uri, { headers: { "Authorization": `Bearer ${token}`, ...this.defaulutHeader() } })
   }
 
-  async postRequest(signData: { uri: any, body: any, sign?: any }) {
-    const uri = `${this.host}${signData.uri}`
-    const headers = { headers: this.defaulutHeader() }
-    return await http.post(uri, signData.body, headers)
-  }
-
-  defaulutHeader() {
+  private defaulutHeader() {
     if (this.merchantId) {
       return {
-        "fox-merchant-id": this.merchantId
-      }
+        'fox-merchant-id': this.merchantId,
+      };
     } else {
-      return {}
+      return {};
     }
   }
 }

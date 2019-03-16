@@ -53,12 +53,12 @@ function generateToken(keyAndSign) {
                         throw new Error('missing requestSign');
                     }
                     header = {
-                        alg: "HS256",
-                        typ: "JWT"
+                        alg: 'HS256',
+                        typ: 'JWT',
                     };
                     payload = {
                         key: key,
-                        sign: keyAndSign.requestSign
+                        sign: keyAndSign.requestSign,
                     };
                     return [4 /*yield*/, jwt_1.sign(header, payload, keyAndSign.secret)];
                 case 1: return [2 /*return*/, _a.sent()];

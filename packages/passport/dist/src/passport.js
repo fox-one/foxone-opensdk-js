@@ -46,9 +46,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var device_1 = require("./device");
 var http_1 = require("./http");
 var sign_1 = require("./sign");
-var token_1 = require("./token");
+var tfaError_1 = require("./tfaError");
 var Passport = /** @class */ (function () {
     function Passport(props) {
         this.host = props.host;
@@ -69,7 +70,7 @@ var Passport = /** @class */ (function () {
                         res = _a.sent();
                         data = {
                             captchaId: res.captcha_id,
-                            captchaURL: this.host + "/api/captcha/" + res.captcha_id + ".png"
+                            captchaURL: this.host + "/api/captcha/" + res.captcha_id + ".png",
                         };
                         return [2 /*return*/, data];
                 }
@@ -85,11 +86,11 @@ var Passport = /** @class */ (function () {
                         url = '/api/account/request_register';
                         method = 'post';
                         body = {
+                            captcha: request.captchaCode,
+                            captcha_id: request.captchaId,
+                            email: request.email,
                             phone_code: request.regionCode,
                             phone_number: request.mobile,
-                            captcha_id: request.captchaId,
-                            captcha: request.captchaCode,
-                            email: request.email
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -106,10 +107,10 @@ var Passport = /** @class */ (function () {
                         url = '/api/account/register';
                         method = 'post';
                         body = {
-                            name: register.name,
                             code: register.code,
+                            name: register.name,
                             password: sign_1.passwordSalt(register.password),
-                            token: register.token
+                            token: register.token,
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -126,10 +127,10 @@ var Passport = /** @class */ (function () {
                         url = '/api/account/request_login_phone';
                         method = 'post';
                         body = {
+                            captcha: request.captchaCode,
+                            captcha_id: request.captchaId,
                             phone_code: request.regionCode,
                             phone_number: request.mobile,
-                            captcha_id: request.captchaId,
-                            captcha: request.captchaCode
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -146,8 +147,8 @@ var Passport = /** @class */ (function () {
                         url = '/api/account/login_phone';
                         method = 'post';
                         body = {
+                            code: login.mobileCode,
                             token: login.token,
-                            code: login.mobileCode
                         };
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -167,14 +168,14 @@ var Passport = /** @class */ (function () {
                         if (login.email) {
                             body = {
                                 email: login.email,
-                                password: saltPassword
+                                password: saltPassword,
                             };
                         }
                         else {
                             body = {
-                                phone_number: login.mobile,
+                                password: saltPassword,
                                 phone_code: login.regionCode,
-                                password: saltPassword
+                                phone_number: login.mobile,
                             };
                         }
                         return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
@@ -183,25 +184,39 @@ var Passport = /** @class */ (function () {
             });
         });
     };
-    Passport.prototype.getUserDetail = function (secret) {
+    Passport.prototype.loginWithTFA = function (login) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, method, signData, keyAndSign, token, uri;
+            var url, method, body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url = '/api/account/login_tfa';
+                        method = 'post';
+                        body = {
+                            code: login.code,
+                            tfa_token: login.tfaToken,
+                        };
+                        return [4 /*yield*/, this.postRequest(sign_1.generateSignRequest({ method: method, url: url, body: body }))];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Passport.prototype.getUserDetail = function (secretInfo) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, method, key, secret, signData, uri, headers;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         url = '/api/account/detail';
                         method = 'get';
-                        signData = sign_1.generateSignRequest({ method: method, url: url });
-                        keyAndSign = {
-                            key: secret.key,
-                            secret: secret.secret,
-                            requestSign: signData.sign
-                        };
-                        return [4 /*yield*/, token_1.generateToken(keyAndSign)];
+                        key = secretInfo.key, secret = secretInfo.secret;
+                        return [4 /*yield*/, sign_1.generateSignAndJWT({ method: method, url: url, key: key, secret: secret })];
                     case 1:
-                        token = _a.sent();
+                        signData = _a.sent();
                         uri = "" + this.host + signData.uri;
-                        return [4 /*yield*/, http_1.default.get(uri, { headers: __assign({ "Authorization": "Bearer " + token }, this.defaulutHeader()) })];
+                        headers = signData.headers;
+                        return [4 /*yield*/, http_1.default.get(uri, __assign({ headers: headers }, this.defaulutHeader()))];
                     case 2: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -209,14 +224,35 @@ var Passport = /** @class */ (function () {
     };
     Passport.prototype.postRequest = function (signData) {
         return __awaiter(this, void 0, void 0, function () {
-            var uri, headers;
+            var uri, device, deviceInfo, headers, error_1, data, code, tfa_token, msg, tfaError;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         uri = "" + this.host + signData.uri;
-                        headers = { headers: this.defaulutHeader() };
-                        return [4 /*yield*/, http_1.default.post(uri, signData.body, headers)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                        device = device_1.default.getInstance();
+                        return [4 /*yield*/, device.getDeviceinfo()];
+                    case 1:
+                        deviceInfo = _a.sent();
+                        headers = __assign({ 'device-info': deviceInfo }, this.defaulutHeader());
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, http_1.default.post(uri, signData.body, { headers: headers })];
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4:
+                        error_1 = _a.sent();
+                        data = error_1.response.data;
+                        code = data.code;
+                        if (code === 1110) {
+                            tfa_token = data.data.tfa_token, msg = data.msg;
+                            tfaError = new tfaError_1.default(code, msg, tfa_token);
+                            throw tfaError;
+                        }
+                        else {
+                            throw error_1;
+                        }
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -224,7 +260,7 @@ var Passport = /** @class */ (function () {
     Passport.prototype.defaulutHeader = function () {
         if (this.merchantId) {
             return {
-                "fox-merchant-id": this.merchantId
+                'fox-merchant-id': this.merchantId,
             };
         }
         else {

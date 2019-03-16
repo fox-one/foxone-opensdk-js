@@ -50,8 +50,8 @@ var Admin = /** @class */ (function () {
                         url = '/admin/login';
                         method = 'post';
                         body = {
+                            password: sign_js_1.passwordSalt(login.password),
                             username: login.username,
-                            password: sign_js_1.passwordSalt(login.password)
                         };
                         return [4 /*yield*/, this.postRequest(sign_js_1.generateSignRequest({ method: method, url: url, body: body }))];
                     case 1: return [2 /*return*/, _a.sent()];

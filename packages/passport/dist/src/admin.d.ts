@@ -1,5 +1,5 @@
 export default class Admin {
-    host: string;
+    private host;
     constructor(props: {
         host: string;
     });

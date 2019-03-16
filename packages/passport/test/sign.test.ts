@@ -1,33 +1,26 @@
-import { generateSignRequest, generateSignAndJWT, generateToken, passwordSalt, Passport } from '../dist/index';
+import { generateSignAndJWT, generateSignRequest, passwordSalt } from '../dist/index';
 
-test('sign', async () => {
-  let signData = generateSignRequest({ method: 'get', url: '/api/test' });
-  console.log(signData);
-  // expect
-  let token = await generateToken({ key: "-charlie", secret: "75fdb37fa6d6baf4ec5d16c9f566b202", requestSign: "vSR85LYVs9u1rgYyyd3ftxGU5q3v7lDkS8LixgI9qEQ=" });
-  // let signJWT = generateSignAndJWT({method: 'get',url: '/api/test',key:'72afa5be9d89b91e289e3c6a1840ccba-bc95b6e29f6848008e8ee84b68ff6a68',secret:'035d6ed618b0f72933e8ead7f08b9974'})
-  console.log(token);
-  expect(token)
+const SECRET = 'e2ca739487c919e50100dc7b944a2704';
+const KEY = '324a763307b54e41c6689f594816974dVE8';
+
+test('generateSignRequest', async () => {
+  const signData = generateSignRequest({ method: 'get', url: '/api/test' });
+  const { uri, sign } = signData;
+
+  expect(uri.length).toBeGreaterThan(0);
+  expect(sign.length).toBeGreaterThan(0);
+});
+
+test('generateSignAndJWT', async () => {
+  const signJWT = await generateSignAndJWT({ method: 'get', url: '/api/test', key: KEY, secret: SECRET });
+  const { uri, headers } = signJWT;
+
+  expect(uri.length).toBeGreaterThan(0);
+  expect(headers).toHaveProperty('Authorization');
 });
 
 test('salt password', () => {
-  let password = '123456a';
-  let saltPassword = passwordSalt(password);
-  console.log(saltPassword);
+  const password = '123456a';
+  const saltPassword = passwordSalt(password);
   expect(saltPassword).toEqual('48cee7c93df60862b8b98875124d3df3');
-});
-
-test('login', async () => {
-  const passport = new Passport({
-    host: 'https://dev-gateway.fox.one',
-    merchantId: '5c8a9491dca25af694004d5e1711b217',
-  });
-  
-  let loginValue = {
-    password: '111111',
-  }
-
-  let session = await passport.login(loginValue);
-  console.log(session);
-
 });

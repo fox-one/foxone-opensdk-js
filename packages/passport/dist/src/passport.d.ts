@@ -1,6 +1,6 @@
 export default class Passport {
-    host: string;
-    merchantId: string;
+    private host;
+    private merchantId;
     constructor(props: {
         host: string;
         merchantId: string;
@@ -38,7 +38,11 @@ export default class Passport {
         email?: string;
         password: string;
     }): Promise<any>;
-    getUserDetail(secret: {
+    loginWithTFA(login: {
+        tfaToken: string;
+        code: string;
+    }): Promise<any>;
+    getUserDetail(secretInfo: {
         key: string;
         secret: string;
     }): Promise<any>;
@@ -47,9 +51,5 @@ export default class Passport {
         body: any;
         sign?: any;
     }): Promise<any>;
-    defaulutHeader(): {
-        "fox-merchant-id": string;
-    } | {
-        "fox-merchant-id"?: undefined;
-    };
+    private defaulutHeader;
 }

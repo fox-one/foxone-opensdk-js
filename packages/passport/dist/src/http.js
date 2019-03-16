@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
 var instance = axios_1.default.create({
+    headers: {
+        'Content-Type': 'application/json',
+    },
     timeout: 20000,
     withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json'
-    }
 });
 exports.default = {
     request: function (config) {
@@ -19,17 +19,19 @@ exports.default = {
         }, function (_a) {
             var response = _a.response, message = _a.message;
             if (!response) {
-                var err_1 = { code: 'network_error', message: 'network error' };
-                return Promise.reject(err_1);
+                var neterror = { code: 'network_error', message: 'network error' };
+                return Promise.reject(neterror);
             }
             var data = response.data, status = response.status;
             var code = status;
-            if (data && data.msg)
+            if (data && data.msg) {
                 message = data.msg;
-            if (data && data.code)
+            }
+            if (data && data.code) {
                 code = data.code;
-            var err = { code: code, message: message, response: response };
-            return Promise.reject(err);
+            }
+            var error = { code: code, message: message, response: response };
+            return Promise.reject(error);
         });
     },
     get: function (url, config) {
@@ -61,6 +63,6 @@ exports.default = {
         config.url = url;
         config.method = 'delete';
         return this.request(config);
-    }
+    },
 };
 //# sourceMappingURL=http.js.map
