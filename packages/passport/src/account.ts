@@ -199,9 +199,16 @@ export class Account {
   }
 
   public async resetPassword(resetPassword: ResetPassword) {
+    const password = passwordSalt(resetPassword.password);
     const url = '/api/account/reset_password';
     const method = 'post';
-    return await this.sendRequest({ url, method, body: resetPassword });
+    const body = {
+      code: resetPassword.code,
+      password,
+      token: resetPassword.token,
+    };
+
+    return await this.sendRequest({ url, method, body });
   }
 
   public async changePassword(changePassword: ChangePassword) {
