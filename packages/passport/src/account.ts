@@ -192,25 +192,6 @@ export class Account {
     return await this.sendRequest({ url, method });
   }
 
-  public async requestResetPassword(requestResetPassword: RequestResetPassword) {
-    const url = '/api/account/request_reset_password';
-    const method = 'post';
-    return await this.sendRequest({ url, method, body: requestResetPassword });
-  }
-
-  public async resetPassword(resetPassword: ResetPassword) {
-    const password = passwordSalt(resetPassword.password);
-    const url = '/api/account/reset_password';
-    const method = 'post';
-    const body = {
-      code: resetPassword.code,
-      password,
-      token: resetPassword.token,
-    };
-
-    return await this.sendRequest({ url, method, body });
-  }
-
   public async changePassword(changePassword: ChangePassword) {
     const password = passwordSalt(changePassword.password);
     const newPassword = passwordSalt(changePassword.new_password);
@@ -218,6 +199,23 @@ export class Account {
     const method = 'post';
 
     return await this.sendRequest({ url, method, body: { password, new_password: newPassword } });
+  }
+  
+  public async requestResetPassword(requestResetPassword: RequestResetPassword) {
+    const uri = '/api/account/request_reset_password';
+    return await this.postRequest({ uri, body: requestResetPassword });
+  }
+
+  public async resetPassword(resetPassword: ResetPassword) {
+    const password = passwordSalt(resetPassword.password);
+    const uri = '/api/account/reset_password';
+    const body = {
+      code: resetPassword.code,
+      password,
+      token: resetPassword.token,
+    };
+
+    return await this.postRequest({ uri, body });
   }
 
   public async sendRequest(request: { method: string, url: string, body?: any }) {

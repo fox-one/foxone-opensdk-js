@@ -350,40 +350,6 @@ var Account = /** @class */ (function () {
             });
         });
     };
-    Account.prototype.requestResetPassword = function (requestResetPassword) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url, method;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        url = '/api/account/request_reset_password';
-                        method = 'post';
-                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: requestResetPassword })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    Account.prototype.resetPassword = function (resetPassword) {
-        return __awaiter(this, void 0, void 0, function () {
-            var password, url, method, body;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        password = sign_1.passwordSalt(resetPassword.password);
-                        url = '/api/account/reset_password';
-                        method = 'post';
-                        body = {
-                            code: resetPassword.code,
-                            password: password,
-                            token: resetPassword.token,
-                        };
-                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: body })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
     Account.prototype.changePassword = function (changePassword) {
         return __awaiter(this, void 0, void 0, function () {
             var password, newPassword, url, method;
@@ -395,6 +361,38 @@ var Account = /** @class */ (function () {
                         url = '/api/account/modify_password';
                         method = 'post';
                         return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: { password: password, new_password: newPassword } })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.requestResetPassword = function (requestResetPassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var uri;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        uri = '/api/account/request_reset_password';
+                        return [4 /*yield*/, this.postRequest({ uri: uri, body: requestResetPassword })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    Account.prototype.resetPassword = function (resetPassword) {
+        return __awaiter(this, void 0, void 0, function () {
+            var password, uri, body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        password = sign_1.passwordSalt(resetPassword.password);
+                        uri = '/api/account/reset_password';
+                        body = {
+                            code: resetPassword.code,
+                            password: password,
+                            token: resetPassword.token,
+                        };
+                        return [4 /*yield*/, this.postRequest({ uri: uri, body: body })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
