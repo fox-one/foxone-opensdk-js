@@ -366,13 +366,19 @@ var Account = /** @class */ (function () {
     };
     Account.prototype.resetPassword = function (resetPassword) {
         return __awaiter(this, void 0, void 0, function () {
-            var url, method;
+            var password, url, method, body;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        password = sign_1.passwordSalt(resetPassword.password);
                         url = '/api/account/reset_password';
                         method = 'post';
-                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: resetPassword })];
+                        body = {
+                            code: resetPassword.code,
+                            password: password,
+                            token: resetPassword.token,
+                        };
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: body })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -485,7 +491,6 @@ var Account = /** @class */ (function () {
                     case 3: return [2 /*return*/, _a.sent()];
                     case 4:
                         error_1 = _a.sent();
-                        debugger;
                         data = error_1.response.data;
                         code = data.code;
                         if (code === exports.TFARequireCode) {
