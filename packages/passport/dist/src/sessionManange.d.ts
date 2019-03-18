@@ -1,5 +1,5 @@
-import Session from './model/session';
-import User from './model/user';
+import Session from './interface/session';
+import User from './interface/user';
 export default class SessionManager {
     constructor();
     getSession(): Promise<Session | null>;

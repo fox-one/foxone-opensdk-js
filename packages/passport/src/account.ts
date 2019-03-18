@@ -1,11 +1,11 @@
 import DeviceManager from './device';
 import http from './http';
-import ChangePassword from './model/changePassword';
-import KYCProfile from './model/kycProfile';
-import RequestResetPassword from './model/requestResetPassword';
-import ResetPassword from './model/resetPassword';
-import Session from './model/session';
-import User from './model/user';
+import ChangePassword from './interface/changePassword';
+import KYCProfile from './interface/kycProfile';
+import RequestResetPassword from './interface/requestResetPassword';
+import ResetPassword from './interface/resetPassword';
+import Session from './interface/session';
+import User from './interface/user';
 import SessionManager from './sessionManange';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './sign';
 import TFAError from './tfaError';

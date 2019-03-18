@@ -1,7 +1,7 @@
 import { Account, TFARequireCode } from './src/account';
 import Admin from './src/admin';
-import KYCProfile from './src/model/kycProfile';
-import Session from './src/model/session';
+import KYCProfile from './src/interface/kycProfile';
+import Session from './src/interface/session';
 import Passport from './src/passport';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './src/sign';
 import TFAError from './src/tfaError';
