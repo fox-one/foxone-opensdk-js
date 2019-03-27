@@ -1,4 +1,4 @@
 export default interface ChangePassword {
-    password: string;
+    password?: string;
     new_password: string;
 }

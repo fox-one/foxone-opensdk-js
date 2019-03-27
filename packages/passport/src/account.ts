@@ -193,14 +193,25 @@ export class Account {
   }
 
   public async changePassword(changePassword: ChangePassword) {
-    const password = passwordSalt(changePassword.password);
-    const newPassword = passwordSalt(changePassword.new_password);
+    const { password: rawPassword, new_password: rawNewPassword } = changePassword;
+    let body: any;
+    const newPassword = passwordSalt(rawNewPassword);
+
+    body = {
+      new_password: newPassword,
+    };
+
+    if (rawPassword) {
+      const password = passwordSalt(rawPassword);
+      body = {password, ...body};
+    }
+
     const url = '/api/account/modify_password';
     const method = 'post';
 
-    return await this.sendRequest({ url, method, body: { password, new_password: newPassword } });
+    return await this.sendRequest({ url, method, body });
   }
-  
+
   public async requestResetPassword(requestResetPassword: RequestResetPassword) {
     const uri = '/api/account/request_reset_password';
     return await this.postRequest({ uri, body: requestResetPassword });

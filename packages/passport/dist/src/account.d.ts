@@ -64,9 +64,9 @@ export declare class Account {
         code: string;
     }): Promise<any>;
     logout(): Promise<any>;
+    changePassword(changePassword: ChangePassword): Promise<any>;
     requestResetPassword(requestResetPassword: RequestResetPassword): Promise<any>;
     resetPassword(resetPassword: ResetPassword): Promise<any>;
-    changePassword(changePassword: ChangePassword): Promise<any>;
     sendRequest(request: {
         method: string;
         url: string;

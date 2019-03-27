@@ -352,15 +352,22 @@ var Account = /** @class */ (function () {
     };
     Account.prototype.changePassword = function (changePassword) {
         return __awaiter(this, void 0, void 0, function () {
-            var password, newPassword, url, method;
+            var rawPassword, rawNewPassword, body, newPassword, password, url, method;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        password = sign_1.passwordSalt(changePassword.password);
-                        newPassword = sign_1.passwordSalt(changePassword.new_password);
+                        rawPassword = changePassword.password, rawNewPassword = changePassword.new_password;
+                        newPassword = sign_1.passwordSalt(rawNewPassword);
+                        body = {
+                            new_password: newPassword,
+                        };
+                        if (rawPassword) {
+                            password = sign_1.passwordSalt(rawPassword);
+                            body = __assign({ password: password }, body);
+                        }
                         url = '/api/account/modify_password';
                         method = 'post';
-                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: { password: password, new_password: newPassword } })];
+                        return [4 /*yield*/, this.sendRequest({ url: url, method: method, body: body })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
