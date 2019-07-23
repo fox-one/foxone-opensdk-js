@@ -8,19 +8,27 @@
     "access": "public"
   },
   "dependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
     "@types/axios": "^0.14.0",
     "@types/base64url": "^2.0.0",
     "@types/crypto-js": "^3.1.43",
     "@types/fingerprintjs2": "^2.0.0",
+    "@types/node": "^10.12.18",
     "@types/node-forge": "^0.8.4",
     "@types/uuid": "^3.4.4",
     "axios": "^0.18.0",
+    "babel-loader": "^8.0.5",
     "crypto-js": "^3.1.9-1",
     "detect-browser": "^4.1.0",
     "fingerprintjs2": "^2.0.6",
     "localforage": "^1.7.3",
     "node-forge": "^0.8.5",
-    "node-jose": "^1.1.0"
+    "node-jose": "^1.1.0",
+    "ts-loader": "^5.3.3",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
   },
   "repository": {
     "type": "git",
