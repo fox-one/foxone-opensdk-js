@@ -186,6 +186,7 @@ async function signAndRequest(session, url, options) {
 
 Passport 提供了实用 PKCS1 格式封装的 RSA密钥对PIN进行加密。
 
+
 对于加密提供了方法 
 ```function encryptPIN(pin: string, pem: string): Promise<string>;```
 
@@ -201,6 +202,7 @@ Passport 提供了实用 PKCS1 格式封装的 RSA密钥对PIN进行加密。
 Example:
 以下例子来自单元测试 sign.test.ts
 ```
+import { decryptPIN, encryptPIN } from "@foxone/passport";
   const pem = `
   -----BEGIN RSA PUBLIC KEY-----
   MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAysHUv9wZvKMsqkJoYCKliX1D2HaN2NSTx/2FlqGR6BqSurdzWOPpeyJHztBbpTMldA4sTLLMY8xKrL0b98LxWn/EQgmuW8/YHdpNLoex7OdEXdQsu+J5iO7DEwfWmxuWrnCN+/7LDX/ssoRiOtaESZwYhnwkQ7sZM2ThQFxkSpX/ykBEMHvrFvEG2oJ43jim02q0CpRDlPpolRPJ4++FQPPDmpFFwrFurhHtl0h3Ct74g8NpHVxklAHm7s/WA2sDcC4YHfRKwXAefSNh29+seh06aRZAqjxz0l98Sy2JrmFGEfy7zdzq+5Ot1Ee712hbtHJbKmHv7uaBoiQo69F6awIDAQAB-----END RSA PUBLIC KEY-----
