@@ -3,10 +3,10 @@ import Admin from './src/admin';
 import KYCProfile from './src/interface/kycProfile';
 import Session from './src/interface/session';
 import Passport from './src/passport';
-import { encryptPIN, decryptPIN, verifyPEM } from './src/pin';
+import { decryptPIN, encryptPIN, verifyPEM } from './src/pin';
 import { generateSignAndJWT, generateSignRequest, passwordSalt } from './src/sign';
 import TFAError from './src/tfaError';
-import { decodeToken, generateToken } from './src/token';
+import { decodeToken, generateToken, generateTokenWithPIN } from './src/token';
 
 export {
   Account,
@@ -24,4 +24,5 @@ export {
   encryptPIN,
   decryptPIN,
   verifyPEM,
+  generateTokenWithPIN,
 };
