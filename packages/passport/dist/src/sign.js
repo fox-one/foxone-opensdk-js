@@ -90,4 +90,28 @@ function getTimestamp(date) {
     if (date === void 0) { date = new Date(); }
     return Math.round(date.getTime() / 1000);
 }
+function generatePINRequest(request) {
+    return __awaiter(this, void 0, void 0, function () {
+        var method, url, body, key, secret, pin, signData, sign, uri, keyAndSign, token;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    method = request.method, url = request.url, body = request.body, key = request.key, secret = request.secret, pin = request.pin;
+                    signData = generateSignRequest({ method: method, url: url, body: body });
+                    sign = signData.sign, uri = signData.uri;
+                    keyAndSign = {
+                        key: key,
+                        pin: pin,
+                        requestSign: sign,
+                        secret: secret,
+                    };
+                    return [4 /*yield*/, token_1.generateTokenWithPIN(keyAndSign)];
+                case 1:
+                    token = _a.sent();
+                    return [2 /*return*/, { uri: uri, body: body, headers: { Authorization: "Bearer " + token } }];
+            }
+        });
+    });
+}
+exports.generatePINRequest = generatePINRequest;
 //# sourceMappingURL=sign.js.map

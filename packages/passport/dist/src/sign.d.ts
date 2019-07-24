@@ -21,3 +21,17 @@ export declare function generateSignAndJWT(request: {
     };
 }>;
 export declare function passwordSalt(password: string): string;
+export declare function generatePINRequest(request: {
+    method: string;
+    url: string;
+    body?: any;
+    key: string;
+    secret: string;
+    pin: string;
+}): Promise<{
+    uri: string;
+    body: any;
+    headers: {
+        Authorization: string;
+    };
+}>;

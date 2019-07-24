@@ -1,6 +1,6 @@
 import * as CryptoJS from 'crypto-js';
 import { v4 as uuid } from 'uuid';
-import { generateToken } from './token';
+import { generateToken, generateTokenWithPIN } from './token';
 
 export function generateSignRequest(request: { method: string, url: string, body?: any }) {
   const ts = getTimestamp();
@@ -46,4 +46,20 @@ export function passwordSalt(password: string) {
 
 function getTimestamp(date = new Date()) {
   return Math.round(date.getTime() / 1000);
+}
+
+export async function generatePINRequest(request: { method: string, url: string, body?: any, key: string, secret: string, pin: string }) {
+  const { method, url, body, key, secret, pin } = request;
+  const signData = generateSignRequest({ method, url, body });
+  const { sign, uri } = signData;
+
+  const keyAndSign = {
+    key,
+    pin,
+    requestSign: sign,
+    secret,
+  };
+
+  const token = await generateTokenWithPIN(keyAndSign);
+  return { uri, body, headers: { Authorization: `Bearer ${token}` } };
 }

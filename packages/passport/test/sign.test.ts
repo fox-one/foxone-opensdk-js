@@ -1,4 +1,4 @@
-import { encryptPIN, generateSignAndJWT, generateSignRequest, passwordSalt, decryptPIN, verifyPEM, generateToken } from '../dist/index';
+import { encryptPIN, generateSignAndJWT, generateSignRequest, passwordSalt, decryptPIN, verifyPEM, generateToken, generatePINRequest } from '../dist/index';
 
 const SECRET = 'e2ca739487c919e50100dc7b944a2704';
 const KEY = '324a763307b54e41c6689f594816974dVE8';
@@ -41,4 +41,20 @@ test ('pin', async () => {
   const message = await decryptPIN(encrtypPIN, pripem);
   console.log(message);
   
+});
+
+test('generatePinRequest', async () => {
+  const pem = `
+  -----BEGIN RSA PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAysHUv9wZvKMsqkJoYCKliX1D2HaN2NSTx/2FlqGR6BqSurdzWOPpeyJHztBbpTMldA4sTLLMY8xKrL0b98LxWn/EQgmuW8/YHdpNLoex7OdEXdQsu+J5iO7DEwfWmxuWrnCN+/7LDX/ssoRiOtaESZwYhnwkQ7sZM2ThQFxkSpX/ykBEMHvrFvEG2oJ43jim02q0CpRDlPpolRPJ4++FQPPDmpFFwrFurhHtl0h3Ct74g8NpHVxklAHm7s/WA2sDcC4YHfRKwXAefSNh29+seh06aRZAqjxz0l98Sy2JrmFGEfy7zdzq+5Ot1Ee712hbtHJbKmHv7uaBoiQo69F6awIDAQAB-----END RSA PUBLIC KEY-----
+  `;
+
+  const encrtypPIN =  await encryptPIN('123456', pem);
+
+  const signJWT = await generatePINRequest({ method: 'get', url: '/api/test', key: KEY, secret: SECRET, pin: encrtypPIN });
+  const { uri, headers } = signJWT;
+
+  expect(uri.length).toBeGreaterThan(0);
+  expect(headers).toHaveProperty('Authorization');
+  console.log(signJWT.headers);
 });

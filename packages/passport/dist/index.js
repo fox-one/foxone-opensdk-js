@@ -17,6 +17,7 @@ var sign_1 = require("./src/sign");
 exports.generateSignAndJWT = sign_1.generateSignAndJWT;
 exports.generateSignRequest = sign_1.generateSignRequest;
 exports.passwordSalt = sign_1.passwordSalt;
+exports.generatePINRequest = sign_1.generatePINRequest;
 var tfaError_1 = require("./src/tfaError");
 exports.TFAError = tfaError_1.default;
 var token_1 = require("./src/token");
