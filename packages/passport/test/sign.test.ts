@@ -51,10 +51,10 @@ test('generatePinRequest', async () => {
 
   const encrtypPIN =  await encryptPIN('123456', pem);
 
-  const signJWT = await generatePINRequest({ method: 'get', url: '/api/test', key: KEY, secret: SECRET, pin: encrtypPIN });
-  const { uri, headers } = signJWT;
+  const pinRequest = await generatePINRequest({ method: 'get', url: '/api/test', key: KEY, secret: SECRET, pin: encrtypPIN });
+  const { uri, headers } = pinRequest;
 
   expect(uri.length).toBeGreaterThan(0);
   expect(headers).toHaveProperty('Authorization');
-  console.log(signJWT.headers);
+  console.log(pinRequest.headers);
 });
