@@ -218,3 +218,12 @@ import { decryptPIN, encryptPIN } from "@foxone/passport";
   const message = await decryptPIN(encrtypPIN, pripem);
   console.log(message);
 ```
+
+
+#### 提供方法 generateTokenWithPIN
+对于需要自己携带 PIN 的请求，如不在请求时的 body 里传入值，那么需要在 JWT 里放入 PIN，生成带 PIN 的 JWT 的例子如下
+```
+  const encrtypPIN =  await encryptPIN('123456', pem);
+
+  const token = await generateTokenWithPIN({ key: KEY, secret: SECRET, requestSign: SIGN, pin: encrtypPIN });
+ ```
