@@ -227,3 +227,12 @@ import { decryptPIN, encryptPIN } from "@foxone/passport";
 
   const token = await generateTokenWithPIN({ key: KEY, secret: SECRET, requestSign: SIGN, pin: encrtypPIN });
  ```
+#### 方法 generatePINRequest
+生成带PIN的请求方法
+```
+  const encrtypPIN =  await encryptPIN('123456', pem);
+
+  const pinRequest = await generatePINRequest({ method: 'get', url: '/api/test', key: KEY, secret: SECRET, pin: encrtypPIN });
+  const { uri, headers } = pinRequest;
+  ```
+ 
