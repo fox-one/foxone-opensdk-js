@@ -201,7 +201,7 @@ Passport 提供了实用 PKCS1 格式封装的 RSA密钥对PIN进行加密。
 
 Example:
 以下例子来自单元测试 sign.test.ts
-```
+```javascript
 import { decryptPIN, encryptPIN } from "@foxone/passport";
   const pem = `
   -----BEGIN RSA PUBLIC KEY-----
@@ -222,8 +222,17 @@ import { decryptPIN, encryptPIN } from "@foxone/passport";
 
 #### 提供方法 generateTokenWithPIN
 对于需要自己携带 PIN 的请求，如不在请求时的 body 里传入值，那么需要在 JWT 里放入 PIN，生成带 PIN 的 JWT 的例子如下
-```
+```javascript
   const encrtypPIN =  await encryptPIN('123456', pem);
 
   const token = await generateTokenWithPIN({ key: KEY, secret: SECRET, requestSign: SIGN, pin: encrtypPIN });
  ```
+#### 方法 generatePINRequest
+生成带PIN的请求方法
+```javascript
+  const encrtypPIN =  await encryptPIN('123456', pem);
+
+  const pinRequest = await generatePINRequest({ method: 'get', url: '/api/test', key: KEY, secret: SECRET, pin: encrtypPIN });
+  const { uri, headers } = pinRequest;
+  ```
+ 
