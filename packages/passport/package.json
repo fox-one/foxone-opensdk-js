@@ -18,7 +18,7 @@
     "@types/node": "^10.12.18",
     "@types/node-forge": "^0.8.4",
     "@types/uuid": "^3.4.4",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-loader": "^8.0.5",
     "crypto-js": "^3.1.9-1",
     "detect-browser": "^4.1.0",
