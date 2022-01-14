@@ -24,7 +24,7 @@
     "detect-browser": "^4.1.0",
     "fingerprintjs2": "^2.0.6",
     "localforage": "^1.7.3",
-    "node-forge": "^0.8.5",
+    "node-forge": "^1.0.0",
     "node-jose": "^1.1.0",
     "ts-loader": "^5.3.3",
     "webpack": "^4.29.0",
